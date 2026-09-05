@@ -4,11 +4,21 @@ export const SYMPTOM_OPTIONS = [
   { key: 'heavyBleeding', label: 'Heavy or uncontrolled bleeding', labelId: 'Pendarahan hebat atau tak terkendali', severity: 'red' },
   { key: 'unconscious', label: 'Unconscious or unresponsive', labelId: 'Tidak sadarkan diri atau tidak merespons', severity: 'red' },
   { key: 'stroke', label: 'Sudden weakness, slurred speech, or facial drooping', labelId: 'Kelemahan tiba-tiba, bicara pelo, atau wajah merot', severity: 'red' },
+  { key: 'seizure', label: 'Seizure or convulsions', labelId: 'Kejang', severity: 'red' },
+  { key: 'severeAllergicReaction', label: 'Severe allergic reaction (swelling, hives with breathing trouble)', labelId: 'Reaksi alergi berat (bengkak, biduran disertai sesak napas)', severity: 'red' },
+  { key: 'poisoning', label: 'Suspected poisoning or overdose', labelId: 'Dugaan keracunan atau overdosis', severity: 'red' },
+  { key: 'severeBurn', label: 'Severe burn (large area or face/airway)', labelId: 'Luka bakar berat (area luas atau wajah/saluran napas)', severity: 'red' },
+  { key: 'headInjury', label: 'Head injury with confusion or vomiting', labelId: 'Cedera kepala disertai bingung atau muntah', severity: 'red' },
   { key: 'highFever', label: 'High fever (39°C / 102°F or above)', labelId: 'Demam tinggi (39°C / 102°F atau lebih)', severity: 'yellow' },
   { key: 'persistentVomiting', label: 'Persistent vomiting or diarrhea', labelId: 'Muntah atau diare terus-menerus', severity: 'yellow' },
   { key: 'severePain', label: 'Severe pain (any location)', labelId: 'Nyeri hebat (di bagian mana pun)', severity: 'yellow' },
   { key: 'pregnancyComplication', label: 'Pregnancy complication', labelId: 'Komplikasi kehamilan', severity: 'yellow' },
   { key: 'dehydration', label: 'Signs of dehydration', labelId: 'Tanda-tanda dehidrasi', severity: 'yellow' },
+  { key: 'moderateBurn', label: 'Moderate burn (small area)', labelId: 'Luka bakar sedang (area kecil)', severity: 'yellow' },
+  { key: 'fracture', label: 'Suspected fracture or deep wound', labelId: 'Dugaan patah tulang atau luka dalam', severity: 'yellow' },
+  { key: 'animalBite', label: 'Animal or insect bite/sting', labelId: 'Gigitan atau sengatan hewan/serangga', severity: 'yellow' },
+  { key: 'persistentCough', label: 'Persistent cough (more than 2 weeks)', labelId: 'Batuk terus-menerus (lebih dari 2 minggu)', severity: 'yellow' },
+  { key: 'rash', label: 'Rash or skin infection', labelId: 'Ruam atau infeksi kulit', severity: 'yellow' },
 ]
 
 const SEVERITY_RANK = { red: 3, yellow: 2, green: 1 }
