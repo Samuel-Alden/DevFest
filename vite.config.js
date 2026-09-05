@@ -31,7 +31,7 @@ export default defineConfig({
       injectManifest: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
       },
-      // Dev SW is noisy; enable only when testing push/offline.
+      // only use when dev mode
       devOptions: {
         enabled: false,
       },
