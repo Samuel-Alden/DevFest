@@ -96,7 +96,7 @@ export function AnalyticsPage() {
   return (
     <div className="max-w-2xl mx-auto p-4 pb-16">
       <Link to="/dashboard" className="flex items-center gap-1 text-sm text-ink-soft mb-6 w-fit">
-        <BackIcon className="h-4 w-4" /> {t('back_to_queue')}
+        <BackIcon className="h-4 w-4" /> {t('back')}
       </Link>
 
       <h1 className="text-2xl font-bold text-ink mb-6">{t('analytics_title')}</h1>
@@ -145,18 +145,28 @@ export function AnalyticsPage() {
 
           <section className="rounded-xl border border-line p-4">
             <h2 className="text-sm font-semibold text-ink mb-4">{t('symptom_frequency_heading')}</h2>
-            <ResponsiveContainer width="100%" height={320}>
-              <BarChart data={symptomFrequency} layout="vertical" margin={{ left: 8 }}>
-                <CartesianGrid stroke="var(--color-line)" horizontal={false} />
-                <XAxis type="number" allowDecimals={false} tick={axisTick} />
-                <YAxis dataKey="label" type="category" tick={axisTick} width={150} />
-                <Tooltip
-                  contentStyle={{ background: 'var(--color-paper)', border: '1px solid var(--color-line)', borderRadius: 8 }}
-                  labelStyle={{ color: 'var(--color-ink)' }}
-                />
-                <Bar dataKey="count" fill="var(--color-brand)" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            <div className="space-y-3">
+              {symptomFrequency.map((item) => {
+                const max = Math.max(...symptomFrequency.map((s) => s.count), 1)
+                const pct = Math.max((item.count / max) * 100, item.count > 0 ? 4 : 0)
+                return (
+                  <div key={item.label} className="flex items-center gap-3">
+                    <p className="w-36 shrink-0 text-sm font-semibold text-ink text-left leading-snug">
+                      {item.label}
+                    </p>
+                    <div className="flex-1 h-2.5 rounded-full bg-paper-dim overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-brand transition-all"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                    <span className="w-5 shrink-0 text-right text-xs font-medium text-ink-soft">
+                      {item.count}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
           </section>
         </div>
       )}
