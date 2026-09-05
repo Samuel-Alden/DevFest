@@ -52,7 +52,8 @@ const STRINGS = {
 
     location_captured: '📍 Location attached.',
     location_denied: 'Location not attached — this browser/device blocked the location request. Enable location for this site to include it next time.',
-    location_unavailable: 'Location not attached — no fix could be obtained.',
+    location_unavailable: "Location not attached — this device couldn't get a fix. On Windows, check Settings → Privacy & security → Location is turned on (a separate setting from the browser's own permission).",
+    location_timeout: 'Location not attached — the lookup took too long. A weak Wi-Fi/network signal can cause this; it may work on retry.',
 
     alert_me_for: 'Alert me for:',
     alert_me_for_on: '🔔 Alert me for:',
@@ -115,7 +116,8 @@ const STRINGS = {
 
     location_captured: '📍 Lokasi terlampir.',
     location_denied: 'Lokasi tidak terlampir — browser/perangkat ini memblokir permintaan lokasi. Aktifkan izin lokasi untuk situs ini agar tersertakan lain kali.',
-    location_unavailable: 'Lokasi tidak terlampir — tidak dapat menentukan posisi.',
+    location_unavailable: 'Lokasi tidak terlampir — perangkat ini tidak dapat menentukan posisi. Di Windows, periksa Settings → Privacy & security → Location sudah aktif (pengaturan terpisah dari izin browser).',
+    location_timeout: 'Lokasi tidak terlampir — proses pencarian terlalu lama. Sinyal Wi-Fi/jaringan yang lemah bisa menyebabkan ini; coba lagi.',
 
     alert_me_for: 'Ingatkan saya untuk:',
     alert_me_for_on: '🔔 Ingatkan saya untuk:',

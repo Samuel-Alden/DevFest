@@ -17,6 +17,14 @@ const SYMPTOM_GROUPS = [
 const inputClasses =
   'mt-1 w-full rounded-lg border border-line px-3 py-2 outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft'
 
+const LOCATION_STATUS_KEY = {
+  ok: 'location_captured',
+  denied: 'location_denied',
+  timeout: 'location_timeout',
+  unavailable: 'location_unavailable',
+  unsupported: 'location_unavailable',
+}
+
 export function IntakePage({ onSubmitted }) {
   const { t, lang } = useTranslation()
   const [form, setForm] = useState(emptyForm)
@@ -79,13 +87,7 @@ export function IntakePage({ onSubmitted }) {
           <p className="text-sm text-ink-soft mt-1">
             {lastResult.synced ? t('sent_immediately') : t('saved_offline')}
           </p>
-          <p className="text-xs text-ink-soft mt-2">
-            {lastResult.locationError === null
-              ? t('location_captured')
-              : lastResult.locationError === 'denied'
-                ? t('location_denied')
-                : t('location_unavailable')}
-          </p>
+          <p className="text-xs text-ink-soft mt-2">{t(LOCATION_STATUS_KEY[lastResult.locationError ?? 'ok'])}</p>
         </div>
       )}
 
