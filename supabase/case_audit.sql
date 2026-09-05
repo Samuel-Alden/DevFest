@@ -1,13 +1,5 @@
--- Accountability log for who resolved/reopened/deleted a case, and when.
--- Written only by the trigger below (running as the table owner, bypassing
--- RLS) -- there is deliberately no insert/update/delete policy for anyone,
--- so the log can't be edited or forged from the client. Safe to re-run.
 create table if not exists case_events (
   id uuid primary key default gen_random_uuid(),
-  -- Deliberately no FK/cascade: a deleted case's history must survive the
-  -- case itself, so this table can't reference triage_submissions with
-  -- on delete cascade (that would erase the very "deleted" event being
-  -- recorded, along with the rest of that case's history).
   submission_id uuid not null,
   event_type text not null check (event_type in ('status_change', 'deleted')),
   from_status text,
