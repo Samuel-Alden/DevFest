@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
-import { SEVERITY_META } from '../lib/triage'
+import { SEVERITY_META, SYMPTOM_OPTIONS } from '../lib/triage'
 import { PushAlertToggle } from '../components/PushAlertToggle'
+import { CaseListPane } from '../components/dashboard/CaseListPane'
+import { CaseDetailPane } from '../components/dashboard/CaseDetailPane'
+import { BellIcon, LogoutIcon } from '../components/icons'
 
 function sortSubmissions(rows) {
   return [...rows].sort((a, b) => {
@@ -13,10 +16,27 @@ function sortSubmissions(rows) {
   })
 }
 
+function matchesQuery(row, query) {
+  if (!query.trim()) return true
+  const q = query.toLowerCase()
+  const symptomText = (row.symptoms ?? [])
+    .map((k) => SYMPTOM_OPTIONS.find((o) => o.key === k)?.label ?? k)
+    .join(' ')
+    .toLowerCase()
+  return (
+    row.patient_name?.toLowerCase().includes(q) ||
+    row.notes?.toLowerCase().includes(q) ||
+    symptomText.includes(q)
+  )
+}
+
 export function DashboardPage() {
   const { session, loading } = useAuth()
   const [rows, setRows] = useState([])
   const [loadingRows, setLoadingRows] = useState(true)
+  const [selectedId, setSelectedId] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [showAlertMenu, setShowAlertMenu] = useState(false)
 
   useEffect(() => {
     if (!session) return
@@ -62,75 +82,72 @@ export function DashboardPage() {
     }
   }, [session])
 
+  useEffect(() => {
+    if (selectedId && !rows.some((r) => r.id === selectedId)) setSelectedId(null)
+  }, [rows, selectedId])
+
   if (!loading && !session) return <Navigate to="/login" replace />
 
   const updateStatus = async (id, status) => {
     await supabase.from('triage_submissions').update({ status }).eq('id', id)
   }
 
-  const sorted = sortSubmissions(rows)
+  const sortedRows = sortSubmissions(rows)
+  const visibleRows = sortedRows.filter((r) => matchesQuery(r, searchQuery))
+  const selectedRow = sortedRows.find((r) => r.id === selectedId) ?? null
 
   return (
-    <div className="max-w-3xl mx-auto p-4 pb-16">
-      <header className="flex items-center justify-between mb-6">
+    <div className="h-dvh flex flex-col">
+      <header className="flex items-center justify-between px-4 py-3 border-b border-neutral-200 shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900">Triage Queue</h1>
-          <p className="text-sm text-neutral-500">{sorted.length} active case(s)</p>
+          <h1 className="text-lg font-bold text-neutral-900">TriagePeace</h1>
+          <p className="text-xs text-neutral-500">{sortedRows.length} active case(s)</p>
         </div>
-        <div className="flex flex-col items-end gap-2">
-          <PushAlertToggle />
+        <div className="flex items-center gap-1">
+          <div className="relative">
+            <button
+              onClick={() => setShowAlertMenu((v) => !v)}
+              aria-label="Notification settings"
+              className="p-2 rounded-md hover:bg-neutral-100"
+            >
+              <BellIcon className="h-5 w-5 text-neutral-600" />
+            </button>
+            {showAlertMenu && (
+              <>
+                <div className="fixed inset-0 z-10" onClick={() => setShowAlertMenu(false)} />
+                <div className="absolute right-0 mt-2 w-64 rounded-md border border-neutral-200 bg-white shadow-lg p-3 z-20">
+                  <PushAlertToggle />
+                </div>
+              </>
+            )}
+          </div>
           <button
             onClick={() => supabase.auth.signOut()}
-            className="text-sm text-neutral-400 underline"
+            aria-label="Sign out"
+            className="p-2 rounded-md hover:bg-neutral-100 text-neutral-500"
           >
-            Sign out
+            <LogoutIcon className="h-5 w-5" />
           </button>
         </div>
       </header>
 
-      {loadingRows && <p className="text-neutral-400">Loading…</p>}
-
-      {!loadingRows && sorted.length === 0 && (
-        <p className="text-neutral-400 text-center mt-16">No active cases. Queue is clear.</p>
-      )}
-
-      <ul className="space-y-3">
-        {sorted.map((row) => (
-          <li key={row.id} className="rounded-lg border border-neutral-200 p-4">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <span className={`inline-block px-2 py-0.5 rounded text-xs font-semibold ${SEVERITY_META[row.severity].badge}`}>
-                  {SEVERITY_META[row.severity].label}
-                </span>
-                <p className="mt-2 font-medium text-neutral-900">
-                  {row.patient_name || 'Unnamed patient'} {row.age ? `(${row.age})` : ''}
-                </p>
-                {row.symptoms?.length > 0 && (
-                  <p className="text-sm text-neutral-500 mt-1">{row.symptoms.join(', ')}</p>
-                )}
-                {row.notes && <p className="text-sm text-neutral-500 mt-1 italic">"{row.notes}"</p>}
-                <p className="text-xs text-neutral-400 mt-2">{new Date(row.created_at).toLocaleString()}</p>
-              </div>
-              <div className="flex flex-col gap-2 shrink-0">
-                {row.status !== 'in_progress' && (
-                  <button
-                    onClick={() => updateStatus(row.id, 'in_progress')}
-                    className="text-xs px-3 py-1.5 rounded-md border border-neutral-300 hover:bg-neutral-50"
-                  >
-                    In progress
-                  </button>
-                )}
-                <button
-                  onClick={() => updateStatus(row.id, 'resolved')}
-                  className="text-xs px-3 py-1.5 rounded-md bg-neutral-900 text-white hover:bg-neutral-700"
-                >
-                  Resolve
-                </button>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <div className="flex-1 min-h-0 flex md:grid md:grid-cols-[360px_1fr]">
+        <CaseListPane
+          rows={visibleRows}
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          loading={loadingRows}
+          className={`${selectedId ? 'hidden' : 'flex'} md:flex w-full md:border-r md:border-neutral-200`}
+        />
+        <CaseDetailPane
+          row={selectedRow}
+          onBack={() => setSelectedId(null)}
+          onUpdateStatus={updateStatus}
+          className={`${selectedId ? 'flex' : 'hidden'} md:flex w-full`}
+        />
+      </div>
     </div>
   )
 }
