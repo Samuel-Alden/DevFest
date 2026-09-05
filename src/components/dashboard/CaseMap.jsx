@@ -2,8 +2,7 @@ import { useEffect, useRef } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useTranslation } from '../../lib/i18n'
-
-const SEVERITY_HEX = { red: '#b3382c', yellow: '#b8791e', green: '#3d7247' }
+import { SEVERITY_HEX } from '../../lib/triage'
 
 export function CaseMap({ rows, onSelect }) {
   const { t } = useTranslation()

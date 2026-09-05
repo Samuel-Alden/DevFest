@@ -80,6 +80,12 @@ const STRINGS = {
     appearance_label: 'Appearance',
     dark_mode: 'Dark mode',
     light_mode: 'Light mode',
+
+    analytics_title: 'Trends',
+    case_volume_heading: 'Case volume (last 14 days)',
+    severity_mix_heading: 'Severity mix',
+    symptom_frequency_heading: 'Symptom frequency',
+    no_trend_data: 'No cases in the last 14 days yet.',
   },
   id: {
     landing_tagline: 'Formulir gejala yang bisa dipakai tanpa internet, untuk klinik dengan koneksi tidak stabil.',
@@ -158,6 +164,12 @@ const STRINGS = {
     appearance_label: 'Tampilan',
     dark_mode: 'Mode gelap',
     light_mode: 'Mode terang',
+
+    analytics_title: 'Tren',
+    case_volume_heading: 'Jumlah kasus (14 hari terakhir)',
+    severity_mix_heading: 'Komposisi tingkat keparahan',
+    symptom_frequency_heading: 'Frekuensi gejala',
+    no_trend_data: 'Belum ada kasus dalam 14 hari terakhir.',
   },
 }
 

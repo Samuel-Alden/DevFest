@@ -7,7 +7,7 @@ import { PushAlertToggle } from '../components/PushAlertToggle'
 import { CaseListPane } from '../components/dashboard/CaseListPane'
 import { CaseDetailPane } from '../components/dashboard/CaseDetailPane'
 import { StatsRow } from '../components/dashboard/StatsRow'
-import { BellIcon, SettingsIcon } from '../components/icons'
+import { BellIcon, ChartIcon, SettingsIcon } from '../components/icons'
 import { useTranslation } from '../lib/i18n'
 
 function sortActive(rows) {
@@ -174,6 +174,13 @@ export function DashboardPage() {
               </>
             )}
           </div>
+          <Link
+            to="/analytics"
+            aria-label={t('analytics_title')}
+            className="p-2 rounded-lg transition-colors hover:bg-white/10 text-white"
+          >
+            <ChartIcon className="h-5 w-5" />
+          </Link>
           <Link
             to="/settings"
             aria-label={t('settings_title')}

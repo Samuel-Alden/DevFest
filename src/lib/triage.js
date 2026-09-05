@@ -24,6 +24,8 @@ export function computeSeverity(selectedSymptomKeys) {
   return worst
 }
 
+export const SEVERITY_HEX = { red: '#b3382c', yellow: '#b8791e', green: '#3d7247' }
+
 export const SEVERITY_META = {
   red: {
     label: 'Emergency',
