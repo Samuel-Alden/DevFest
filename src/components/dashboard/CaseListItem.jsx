@@ -1,11 +1,18 @@
 import { SEVERITY_META, SYMPTOM_OPTIONS } from '../../lib/triage'
+import { useTranslation, pick } from '../../lib/i18n'
 
-function symptomSummary(symptoms) {
-  if (!symptoms?.length) return 'No symptoms recorded'
-  return symptoms.map((k) => SYMPTOM_OPTIONS.find((o) => o.key === k)?.label ?? k).join(', ')
+function symptomSummary(symptoms, lang, t) {
+  if (!symptoms?.length) return t('no_symptoms_recorded')
+  return symptoms
+    .map((k) => {
+      const opt = SYMPTOM_OPTIONS.find((o) => o.key === k)
+      return opt ? pick(opt.label, opt.labelId, lang) : k
+    })
+    .join(', ')
 }
 
 export function CaseListItem({ row, selected, onSelect }) {
+  const { t, lang } = useTranslation()
   const meta = SEVERITY_META[row.severity]
   const initial = row.patient_name?.trim()?.[0]?.toUpperCase() ?? '?'
 
@@ -25,10 +32,10 @@ export function CaseListItem({ row, selected, onSelect }) {
         <span className="min-w-0 flex-1">
           <span className="flex items-baseline justify-between gap-2">
             <span className="font-semibold text-ink truncate">
-              {row.patient_name || 'Unnamed patient'} {row.age ? `(${row.age})` : ''}
+              {row.patient_name || t('unnamed_patient')} {row.age ? `(${row.age})` : ''}
             </span>
           </span>
-          <span className="block text-xs text-ink-soft truncate">{symptomSummary(row.symptoms)}</span>
+          <span className="block text-xs text-ink-soft truncate">{symptomSummary(row.symptoms, lang, t)}</span>
           {row.notes && <span className="block text-xs text-ink-soft/80 italic truncate">"{row.notes}"</span>}
         </span>
       </button>

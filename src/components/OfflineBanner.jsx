@@ -1,4 +1,7 @@
+import { useTranslation } from '../lib/i18n'
+
 export function OfflineBanner({ isOnline, pendingCount, isSyncing }) {
+  const { t } = useTranslation()
   if (isOnline && pendingCount === 0) return null
 
   return (
@@ -7,9 +10,9 @@ export function OfflineBanner({ isOnline, pendingCount, isSyncing }) {
         isOnline ? 'bg-brand text-white' : 'bg-ink text-white'
       }`}
     >
-      {!isOnline && "You're offline — submissions are being saved on this device."}
-      {isOnline && isSyncing && 'Syncing saved submissions…'}
-      {isOnline && !isSyncing && pendingCount > 0 && `${pendingCount} submission(s) waiting to sync…`}
+      {!isOnline && t('offline_banner')}
+      {isOnline && isSyncing && t('syncing')}
+      {isOnline && !isSyncing && pendingCount > 0 && t('pending_sync', pendingCount)}
     </div>
   )
 }

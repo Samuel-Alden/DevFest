@@ -6,9 +6,12 @@ import { SEVERITY_META, SYMPTOM_OPTIONS } from '../lib/triage'
 import { PushAlertToggle } from '../components/PushAlertToggle'
 import { CaseListPane } from '../components/dashboard/CaseListPane'
 import { CaseDetailPane } from '../components/dashboard/CaseDetailPane'
+import { StatsRow } from '../components/dashboard/StatsRow'
 import { BellIcon, LogoutIcon } from '../components/icons'
+import { useTranslation } from '../lib/i18n'
+import { LanguageToggle } from '../components/LanguageToggle'
 
-function sortSubmissions(rows) {
+function sortActive(rows) {
   return [...rows].sort((a, b) => {
     const orderDiff = SEVERITY_META[a.severity].order - SEVERITY_META[b.severity].order
     if (orderDiff !== 0) return orderDiff
@@ -16,11 +19,18 @@ function sortSubmissions(rows) {
   })
 }
 
+function sortResolved(rows) {
+  return [...rows].sort((a, b) => new Date(b.resolved_at ?? b.created_at) - new Date(a.resolved_at ?? a.created_at))
+}
+
 function matchesQuery(row, query) {
   if (!query.trim()) return true
   const q = query.toLowerCase()
   const symptomText = (row.symptoms ?? [])
-    .map((k) => SYMPTOM_OPTIONS.find((o) => o.key === k)?.label ?? k)
+    .map((k) => {
+      const opt = SYMPTOM_OPTIONS.find((o) => o.key === k)
+      return opt ? `${opt.label} ${opt.labelId}` : k
+    })
     .join(' ')
     .toLowerCase()
   return (
@@ -32,8 +42,14 @@ function matchesQuery(row, query) {
 
 export function DashboardPage() {
   const { session, loading } = useAuth()
+  const { t } = useTranslation()
   const [rows, setRows] = useState([])
   const [loadingRows, setLoadingRows] = useState(true)
+  const [resolvedRows, setResolvedRows] = useState([])
+  const [loadingResolved, setLoadingResolved] = useState(false)
+  const [resolvedLoaded, setResolvedLoaded] = useState(false)
+  const [viewMode, setViewMode] = useState('active')
+  const [displayMode, setDisplayMode] = useState('list')
   const [selectedId, setSelectedId] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [showAlertMenu, setShowAlertMenu] = useState(false)
@@ -67,6 +83,8 @@ export function DashboardPage() {
             if (updated.status === 'resolved') {
               return current.filter((r) => r.id !== updated.id)
             }
+            const exists = current.some((r) => r.id === updated.id)
+            if (!exists) return [...current, updated]
             return current.map((r) => (r.id === updated.id ? updated : r))
           }
           if (payload.eventType === 'DELETE') {
@@ -82,32 +100,63 @@ export function DashboardPage() {
     }
   }, [session])
 
+  const loadResolved = async () => {
+    setLoadingResolved(true)
+    const { data } = await supabase
+      .from('triage_submissions')
+      .select('*')
+      .eq('status', 'resolved')
+      .order('resolved_at', { ascending: false })
+      .limit(200)
+    setResolvedRows(data ?? [])
+    setResolvedLoaded(true)
+    setLoadingResolved(false)
+  }
+
+  const handleViewModeChange = (mode) => {
+    setViewMode(mode)
+    setSelectedId(null)
+    if (mode === 'resolved' && !resolvedLoaded) loadResolved()
+  }
+
+  const activeRowSet = viewMode === 'active' ? rows : resolvedRows
   useEffect(() => {
-    if (selectedId && !rows.some((r) => r.id === selectedId)) setSelectedId(null)
-  }, [rows, selectedId])
+    if (selectedId && !activeRowSet.some((r) => r.id === selectedId)) setSelectedId(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeRowSet, selectedId])
 
   if (!loading && !session) return <Navigate to="/login" replace />
 
   const updateStatus = async (id, status) => {
-    await supabase.from('triage_submissions').update({ status }).eq('id', id)
+    const patch = { status, resolved_at: status === 'resolved' ? new Date().toISOString() : null }
+    await supabase.from('triage_submissions').update(patch).eq('id', id)
   }
 
-  const sortedRows = sortSubmissions(rows)
-  const visibleRows = sortedRows.filter((r) => matchesQuery(r, searchQuery))
-  const selectedRow = sortedRows.find((r) => r.id === selectedId) ?? null
+  const reopenCase = async (id) => {
+    await supabase.from('triage_submissions').update({ status: 'pending', resolved_at: null }).eq('id', id)
+    setResolvedRows((current) => current.filter((r) => r.id !== id))
+    setSelectedId(null)
+  }
+
+  const sortedRows = sortActive(rows)
+  const sortedResolvedRows = sortResolved(resolvedRows)
+  const currentRows = viewMode === 'active' ? sortedRows : sortedResolvedRows
+  const visibleRows = currentRows.filter((r) => matchesQuery(r, searchQuery))
+  const selectedRow = currentRows.find((r) => r.id === selectedId) ?? null
 
   return (
     <div className="h-dvh flex flex-col">
       <header className="flex items-center justify-between px-4 py-3 bg-brand-deep shrink-0">
         <div>
           <h1 className="text-lg font-bold text-white">TriagePeace</h1>
-          <p className="text-xs text-white/70">{sortedRows.length} active case(s)</p>
+          <p className="text-xs text-white/70">{t('active_cases', sortedRows.length)}</p>
         </div>
         <div className="flex items-center gap-1">
+          <LanguageToggle className="!border-white/30 !text-white hover:!bg-white/10 mr-1" />
           <div className="relative">
             <button
               onClick={() => setShowAlertMenu((v) => !v)}
-              aria-label="Notification settings"
+              aria-label={t('notification_settings')}
               className="p-2 rounded-lg transition-colors hover:bg-white/10"
             >
               <BellIcon className="h-5 w-5 text-white" />
@@ -123,13 +172,15 @@ export function DashboardPage() {
           </div>
           <button
             onClick={() => supabase.auth.signOut()}
-            aria-label="Sign out"
+            aria-label={t('sign_out')}
             className="p-2 rounded-lg transition-colors hover:bg-white/10 text-white"
           >
             <LogoutIcon className="h-5 w-5" />
           </button>
         </div>
       </header>
+
+      {viewMode === 'active' && <StatsRow rows={rows} />}
 
       <div className="flex-1 min-h-0 flex md:grid md:grid-cols-[360px_1fr]">
         <CaseListPane
@@ -138,13 +189,19 @@ export function DashboardPage() {
           onSelect={setSelectedId}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
-          loading={loadingRows}
+          loading={viewMode === 'active' ? loadingRows : loadingResolved}
+          viewMode={viewMode}
+          onViewModeChange={handleViewModeChange}
+          displayMode={displayMode}
+          onDisplayModeChange={setDisplayMode}
           className={`${selectedId ? 'hidden' : 'flex'} md:flex w-full md:border-r md:border-line`}
         />
         <CaseDetailPane
           row={selectedRow}
+          mode={viewMode}
           onBack={() => setSelectedId(null)}
           onUpdateStatus={updateStatus}
+          onReopen={reopenCase}
           className={`${selectedId ? 'flex' : 'hidden'} md:flex w-full`}
         />
       </div>

@@ -2,9 +2,12 @@ import { useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
+import { useTranslation } from '../lib/i18n'
+import { LanguageToggle } from '../components/LanguageToggle'
 
 export function LoginPage() {
   const { session, loading } = useAuth()
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
@@ -23,12 +26,17 @@ export function LoginPage() {
 
   return (
     <div className="max-w-sm mx-auto p-4 mt-16">
-      <h1 className="text-2xl font-bold text-ink mb-1">Clinic Login</h1>
-      <p className="text-sm text-ink-soft mb-6">Health worker access to the triage queue.</p>
+      <div className="flex items-start justify-between gap-3 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-ink mb-1">{t('clinic_login')}</h1>
+          <p className="text-sm text-ink-soft">{t('clinic_login_subtitle')}</p>
+        </div>
+        <LanguageToggle />
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <label className="block">
-          <span className="text-sm font-medium text-ink">Email</span>
+          <span className="text-sm font-medium text-ink">{t('email')}</span>
           <input
             type="email"
             required
@@ -38,7 +46,7 @@ export function LoginPage() {
           />
         </label>
         <label className="block">
-          <span className="text-sm font-medium text-ink">Password</span>
+          <span className="text-sm font-medium text-ink">{t('password')}</span>
           <input
             type="password"
             required
@@ -55,7 +63,7 @@ export function LoginPage() {
           disabled={submitting}
           className="w-full rounded-lg bg-brand text-white font-semibold py-2.5 transition-colors hover:bg-brand-deep disabled:opacity-50"
         >
-          {submitting ? 'Signing in…' : 'Sign in'}
+          {submitting ? t('signing_in') : t('sign_in')}
         </button>
       </form>
     </div>
