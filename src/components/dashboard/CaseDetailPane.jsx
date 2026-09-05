@@ -110,343 +110,354 @@ export function CaseDetailPane({
           {t("back_to_queue")}
         </button>
 
-        <div className="flex-1 min-h-0 overflow-y-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] gap-6">
-          <div>
-            <div>
-              <span
-                className={`inline-block px-2.5 py-1 rounded text-xs font-semibold ${meta.badge}`}
-              >
-                {pick(meta.label, meta.labelId, lang)}
-              </span>
+        {/* Identity strip -- always visible, never scrolls away, so whoever
+            opens a case never has to hunt for whose chart this is. */}
+        <div className="shrink-0">
+          <span
+            className={`inline-block px-2.5 py-1 rounded text-xs font-semibold ${meta.badge}`}
+          >
+            {pick(meta.label, meta.labelId, lang)}
+          </span>
 
-              <h2 className="mt-2 text-2xl font-bold text-ink leading-tight">
-                {row.patient_name || t("unnamed_patient")}
-                {row.age ? ` (${row.age})` : ""}
-              </h2>
+          <h2 className="mt-2 text-2xl font-bold text-ink leading-tight">
+            {row.patient_name || t("unnamed_patient")}
+            {row.age ? ` (${row.age})` : ""}
+          </h2>
 
-              <p className="text-sm text-ink-soft mt-1">
-                {t("submitted_at", new Date(row.created_at).toLocaleString())}
-              </p>
+          <p className="text-sm text-ink-soft mt-1">
+            {t("submitted_at", new Date(row.created_at).toLocaleString())}
+          </p>
 
-              {row.address && (
-                <p className="text-sm text-ink-soft mt-1">{row.address}</p>
-              )}
-            </div>
+          {row.address && (
+            <p className="text-sm text-ink-soft mt-1">{row.address}</p>
+          )}
+        </div>
 
-            {row.complaint_history && (
-              <div className="mt-5">
-                <h3 className="text-base font-semibold text-ink mb-1">
-                  {t("complaint_history_label")}
-                </h3>
-                <p className="text-sm text-ink-soft">
-                  {row.complaint_history}
-                </p>
-              </div>
-            )}
-
-            {/* Selected Symptoms ONLY */}
-            <div className="mt-5">
-              <h3 className="text-base font-semibold text-ink mb-2">
-                {t("symptoms_heading")}
-              </h3>
-
-              <div className="space-y-2">
-                {(row.symptoms ?? [])
-                  .map((key) => SYMPTOM_OPTIONS.find((opt) => opt.key === key))
-                  .filter(Boolean)
-                  .map((opt) => (
-                    <div
-                      key={opt.key}
-                      className="flex items-center gap-2 text-sm text-ink"
-                    >
-                      <span
-                        className={`h-2.5 w-2.5 rounded-full ${
-                          SEVERITY_META[opt.severity].badge
-                        }`}
-                      />
-
-                      <span>{pick(opt.label, opt.labelId, lang)}</span>
-                    </div>
-                  ))}
-              </div>
-            </div>
-
-            {row.notes && (
-              <div className="mt-5">
-                <h3 className="text-base font-semibold text-ink mb-1">
-                  {t("notes_heading")}
-                </h3>
-                <p className="text-sm text-ink-soft italic">"{row.notes}"</p>
-              </div>
-            )}
-
-          </div>
-
-          {/* ================= RIGHT ================= */}
-          <div>
-            {/* Vitals */}
-            {hasVitals && (
-              <section>
-                <h3 className="text-lg font-semibold text-ink mb-4">
-                  {t("section_vitals")}
-                </h3>
-                <div className="grid grid-cols-2 gap-x-8 gap-y-5">
-                  {(row.systolic_bp != null || row.diastolic_bp != null) && (
-                    <Stat
-                      label={t("blood_pressure_label")}
-                      value={`${row.systolic_bp ?? "—"} / ${row.diastolic_bp ?? "—"}`}
-                    />
-                  )}
-                  {row.pulse_rate != null && (
-                    <Stat label={t("pulse_rate")} value={row.pulse_rate} />
-                  )}
-                  {row.respiratory_rate != null && (
-                    <Stat
-                      label={t("respiratory_rate")}
-                      value={row.respiratory_rate}
-                    />
-                  )}
-                  {row.body_temperature != null && (
-                    <Stat
-                      label={t("body_temperature")}
-                      value={row.body_temperature}
-                    />
-                  )}
-                  {row.oxygen_saturation != null && (
-                    <Stat
-                      label={t("oxygen_saturation")}
-                      value={row.oxygen_saturation}
-                    />
-                  )}
-                </div>
-              </section>
-            )}
-
-            {/* Consciousness */}
-            {hasConsciousness && (
-              <section className={hasVitals ? "mt-8" : ""}>
-                <h3 className="text-lg font-semibold text-ink mb-4">
-                  {t("section_consciousness")}
-                </h3>
-
-                <div className="space-y-3">
-                  {row.consciousness_scale === "avpu" && (
-                    <div>
-                      <p className="text-sm text-ink-soft">{t("avpu_label")}</p>
-
-                      <p className="text-lg font-semibold text-ink">
-                        {t(`avpu_${row.avpu_level}`)}
-                      </p>
-                    </div>
-                  )}
-
-                  {row.consciousness_scale === "gcs" && (
-                    <div>
-                      <p className="text-sm text-ink-soft">
-                        {t("gcs_score_label")}
-                      </p>
-
-                      <p className="text-lg font-semibold text-ink">
-                        {row.gcs_score}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </section>
-            )}
-
-            {/* Primary Survey */}
-            {hasPrimarySurvey && (
-              <section className="mt-8">
-                <h3 className="text-lg font-semibold text-ink mb-4">
-                  {t("section_primary_survey")}
-                </h3>
-
-                <div className="grid grid-cols-2 gap-x-8 gap-y-5">
-                  {row.airway_status && (
-                    <div>
-                      <p className="text-sm text-ink-soft">
-                        {t("airway_label")}
-                      </p>
-
-                      <p
-                        className={`text-lg font-semibold ${
-                          row.airway_status === "compromised"
-                            ? "text-tag-red"
-                            : "text-ink"
-                        }`}
-                      >
-                        {t(`status_${row.airway_status}`)}
-                      </p>
-                    </div>
-                  )}
-
-                  {row.breathing_status && (
-                    <div>
-                      <p className="text-sm text-ink-soft">
-                        {t("breathing_label")}
-                      </p>
-
-                      <p
-                        className={`text-lg font-semibold ${
-                          row.breathing_status === "compromised"
-                            ? "text-tag-red"
-                            : "text-ink"
-                        }`}
-                      >
-                        {t(`status_${row.breathing_status}`)}
-                      </p>
-                    </div>
-                  )}
-
-                  {row.circulation_status && (
-                    <div>
-                      <p className="text-sm text-ink-soft">
-                        {t("circulation_label")}
-                      </p>
-
-                      <p
-                        className={`text-lg font-semibold ${
-                          row.circulation_status === "compromised"
-                            ? "text-tag-red"
-                            : "text-ink"
-                        }`}
-                      >
-                        {t(`status_${row.circulation_status}`)}
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {row.bleeding_trauma && (
-                  <p className="text-sm text-tag-red mt-5">
-                    {t("bleeding_trauma_label")}
-                    {row.bleeding_trauma_notes
-                      ? `: ${row.bleeding_trauma_notes}`
-                      : ""}
+        {/* Two columns below the identity strip. On desktop (lg+) each
+            column scrolls independently within whatever height remains
+            after the identity strip and action buttons -- most cases fit
+            with no scrolling at all, and even a data-heavy one only
+            scrolls the one column that needs it, never hiding the other
+            column or the buttons below. On mobile there's no width to
+            split into meaningfully independent scroll regions, so it
+            falls back to one continuous page scroll like any normal page. */}
+        <div className="flex-1 min-h-0 mt-4 overflow-y-auto lg:overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] gap-6 lg:h-full">
+            <div className="lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1">
+              {row.complaint_history && (
+                <div>
+                  <h3 className="text-base font-semibold text-ink mb-1">
+                    {t("complaint_history_label")}
+                  </h3>
+                  <p className="text-sm text-ink-soft">
+                    {row.complaint_history}
                   </p>
-                )}
-              </section>
-            )}
+                </div>
+              )}
 
-            {hasMedicalHistory && (
-              <section className="mt-8">
-                <h3 className="text-lg font-semibold text-ink mb-4">
-                  {t("section_medical_history")}
+              {/* Selected Symptoms ONLY */}
+              <div className={row.complaint_history ? "mt-5" : ""}>
+                <h3 className="text-base font-semibold text-ink mb-2">
+                  {t("symptoms_heading")}
                 </h3>
-                <div className="space-y-3 text-sm text-ink">
-                  {row.drug_allergies && (
-                    <p>
-                      <span className="text-ink-soft">
-                        {t("drug_allergies")}:{" "}
-                      </span>
-                      {row.drug_allergies}
-                    </p>
-                  )}
-                  {row.comorbidities && (
-                    <p>
-                      <span className="text-ink-soft">
-                        {t("comorbidities")}:{" "}
-                      </span>
-                      {row.comorbidities}
-                    </p>
-                  )}
-                  {row.current_medications && (
-                    <p>
-                      <span className="text-ink-soft">
-                        {t("current_medications")}:{" "}
-                      </span>
-                      {row.current_medications}
-                    </p>
+
+                <div className="space-y-2">
+                  {(row.symptoms ?? [])
+                    .map((key) => SYMPTOM_OPTIONS.find((opt) => opt.key === key))
+                    .filter(Boolean)
+                    .map((opt) => (
+                      <div
+                        key={opt.key}
+                        className="flex items-center gap-2 text-sm text-ink"
+                      >
+                        <span
+                          className={`h-2.5 w-2.5 rounded-full ${
+                            SEVERITY_META[opt.severity].badge
+                          }`}
+                        />
+
+                        <span>{pick(opt.label, opt.labelId, lang)}</span>
+                      </div>
+                    ))}
+                </div>
+              </div>
+
+              {row.notes && (
+                <div className="mt-5">
+                  <h3 className="text-base font-semibold text-ink mb-1">
+                    {t("notes_heading")}
+                  </h3>
+                  <p className="text-sm text-ink-soft italic">"{row.notes}"</p>
+                </div>
+              )}
+
+              {hasLocation && (
+                <div className="mt-5">
+                  <h3 className="text-base font-semibold text-ink mb-2">
+                    {t("location_heading")}
+                  </h3>
+                  <div className="h-56 shrink-0 rounded-xl overflow-hidden border border-line">
+                    <CaseMap rows={[row]} onSelect={() => {}} />
+                  </div>
+                </div>
+              )}
+
+              {historyEvents.length > 0 && (
+                <div className="mt-5">
+                  <button
+                    onClick={() => setShowHistory((v) => !v)}
+                    className="text-sm font-semibold text-ink-soft underline"
+                  >
+                    {showHistory ? t("hide_history") : t("view_history")}
+                  </button>
+                  {showHistory && (
+                    <ul className="mt-2 space-y-1.5 animate-fade-in">
+                      {historyEvents.map((event) => (
+                        <li key={event.id} className="text-xs text-ink-soft">
+                          {event.event_type === "deleted"
+                            ? t("deleted_event_label")
+                            : t(
+                                STATUS_LABEL_KEY[event.to_status] ??
+                                  event.to_status,
+                              )}
+                          {" — "}
+                          {event.actor_email ?? t("unknown_actor")}
+                          {" — "}
+                          {new Date(event.created_at).toLocaleString()}
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </div>
-              </section>
-            )}
-          </div>
-          </div>
-
-          {/* MAP -- full width and its own room, not squeezed into a column */}
-          {hasLocation && (
-            <div className="mt-6">
-              <h3 className="text-base font-semibold text-ink mb-2">
-                {t("location_heading")}
-              </h3>
-              <div className="h-72 rounded-xl overflow-hidden border border-line">
-                <CaseMap rows={[row]} onSelect={() => {}} />
-              </div>
-            </div>
-          )}
-
-          {historyEvents.length > 0 && (
-            <div className="mt-6">
-              <button
-                onClick={() => setShowHistory((v) => !v)}
-                className="text-sm font-semibold text-ink-soft underline"
-              >
-                {showHistory ? t("hide_history") : t("view_history")}
-              </button>
-              {showHistory && (
-                <ul className="mt-2 space-y-1.5 animate-fade-in">
-                  {historyEvents.map((event) => (
-                    <li key={event.id} className="text-xs text-ink-soft">
-                      {event.event_type === "deleted"
-                        ? t("deleted_event_label")
-                        : t(STATUS_LABEL_KEY[event.to_status] ?? event.to_status)}
-                      {" — "}
-                      {event.actor_email ?? t("unknown_actor")}
-                      {" — "}
-                      {new Date(event.created_at).toLocaleString()}
-                    </li>
-                  ))}
-                </ul>
               )}
             </div>
-          )}
 
-          {/* Buttons */}
-          <div className="mt-6 pt-4 flex gap-2 border-t border-line">
-            {mode === "resolved" ? (
-              <>
+            {/* ================= RIGHT ================= */}
+            <div className="lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1">
+              {/* Vitals */}
+              {hasVitals && (
+                <section>
+                  <h3 className="text-lg font-semibold text-ink mb-4">
+                    {t("section_vitals")}
+                  </h3>
+                  <div className="grid grid-cols-2 gap-x-8 gap-y-5">
+                    {(row.systolic_bp != null || row.diastolic_bp != null) && (
+                      <Stat
+                        label={t("blood_pressure_label")}
+                        value={`${row.systolic_bp ?? "—"} / ${row.diastolic_bp ?? "—"}`}
+                      />
+                    )}
+                    {row.pulse_rate != null && (
+                      <Stat label={t("pulse_rate")} value={row.pulse_rate} />
+                    )}
+                    {row.respiratory_rate != null && (
+                      <Stat
+                        label={t("respiratory_rate")}
+                        value={row.respiratory_rate}
+                      />
+                    )}
+                    {row.body_temperature != null && (
+                      <Stat
+                        label={t("body_temperature")}
+                        value={row.body_temperature}
+                      />
+                    )}
+                    {row.oxygen_saturation != null && (
+                      <Stat
+                        label={t("oxygen_saturation")}
+                        value={row.oxygen_saturation}
+                      />
+                    )}
+                  </div>
+                </section>
+              )}
+
+              {/* Consciousness */}
+              {hasConsciousness && (
+                <section className={hasVitals ? "mt-8" : ""}>
+                  <h3 className="text-lg font-semibold text-ink mb-4">
+                    {t("section_consciousness")}
+                  </h3>
+
+                  <div className="space-y-3">
+                    {row.consciousness_scale === "avpu" && (
+                      <div>
+                        <p className="text-sm text-ink-soft">{t("avpu_label")}</p>
+
+                        <p className="text-lg font-semibold text-ink">
+                          {t(`avpu_${row.avpu_level}`)}
+                        </p>
+                      </div>
+                    )}
+
+                    {row.consciousness_scale === "gcs" && (
+                      <div>
+                        <p className="text-sm text-ink-soft">
+                          {t("gcs_score_label")}
+                        </p>
+
+                        <p className="text-lg font-semibold text-ink">
+                          {row.gcs_score}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </section>
+              )}
+
+              {/* Primary Survey */}
+              {hasPrimarySurvey && (
+                <section className="mt-8">
+                  <h3 className="text-lg font-semibold text-ink mb-4">
+                    {t("section_primary_survey")}
+                  </h3>
+
+                  <div className="grid grid-cols-2 gap-x-8 gap-y-5">
+                    {row.airway_status && (
+                      <div>
+                        <p className="text-sm text-ink-soft">
+                          {t("airway_label")}
+                        </p>
+
+                        <p
+                          className={`text-lg font-semibold ${
+                            row.airway_status === "compromised"
+                              ? "text-tag-red"
+                              : "text-ink"
+                          }`}
+                        >
+                          {t(`status_${row.airway_status}`)}
+                        </p>
+                      </div>
+                    )}
+
+                    {row.breathing_status && (
+                      <div>
+                        <p className="text-sm text-ink-soft">
+                          {t("breathing_label")}
+                        </p>
+
+                        <p
+                          className={`text-lg font-semibold ${
+                            row.breathing_status === "compromised"
+                              ? "text-tag-red"
+                              : "text-ink"
+                          }`}
+                        >
+                          {t(`status_${row.breathing_status}`)}
+                        </p>
+                      </div>
+                    )}
+
+                    {row.circulation_status && (
+                      <div>
+                        <p className="text-sm text-ink-soft">
+                          {t("circulation_label")}
+                        </p>
+
+                        <p
+                          className={`text-lg font-semibold ${
+                            row.circulation_status === "compromised"
+                              ? "text-tag-red"
+                              : "text-ink"
+                          }`}
+                        >
+                          {t(`status_${row.circulation_status}`)}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {row.bleeding_trauma && (
+                    <p className="text-sm text-tag-red mt-5">
+                      {t("bleeding_trauma_label")}
+                      {row.bleeding_trauma_notes
+                        ? `: ${row.bleeding_trauma_notes}`
+                        : ""}
+                    </p>
+                  )}
+                </section>
+              )}
+
+              {hasMedicalHistory && (
+                <section className="mt-8">
+                  <h3 className="text-lg font-semibold text-ink mb-4">
+                    {t("section_medical_history")}
+                  </h3>
+                  <div className="space-y-3 text-sm text-ink">
+                    {row.drug_allergies && (
+                      <p>
+                        <span className="text-ink-soft">
+                          {t("drug_allergies")}:{" "}
+                        </span>
+                        {row.drug_allergies}
+                      </p>
+                    )}
+                    {row.comorbidities && (
+                      <p>
+                        <span className="text-ink-soft">
+                          {t("comorbidities")}:{" "}
+                        </span>
+                        {row.comorbidities}
+                      </p>
+                    )}
+                    {row.current_medications && (
+                      <p>
+                        <span className="text-ink-soft">
+                          {t("current_medications")}:{" "}
+                        </span>
+                        {row.current_medications}
+                      </p>
+                    )}
+                  </div>
+                </section>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Buttons -- always visible, never scrolls away */}
+        <div className="shrink-0 mt-4 pt-4 flex gap-2 border-t border-line">
+          {mode === "resolved" ? (
+            <>
+              <button
+                onClick={() => onReopen(row.id)}
+                className="text-sm px-4 py-2 rounded-lg border border-line transition-colors hover:bg-paper-dim"
+              >
+                {t("reopen_case")}
+              </button>
+
+              {!confirmingDelete && (
                 <button
-                  onClick={() => onReopen(row.id)}
+                  onClick={() => {
+                    setConfirmingForId(row.id);
+                    setConfirmingDelete(true);
+                  }}
+                  className="text-sm px-4 py-2 rounded-lg border border-line text-tag-red transition-colors hover:bg-tag-red-soft"
+                >
+                  {t("delete_case")}
+                </button>
+              )}
+            </>
+          ) : (
+            <>
+              {row.status !== "in_progress" && (
+                <button
+                  onClick={() => onUpdateStatus(row.id, "in_progress")}
                   className="text-sm px-4 py-2 rounded-lg border border-line transition-colors hover:bg-paper-dim"
                 >
-                  {t("reopen_case")}
+                  {t("in_progress")}
                 </button>
+              )}
 
-                {!confirmingDelete && (
-                  <button
-                    onClick={() => {
-                      setConfirmingForId(row.id);
-                      setConfirmingDelete(true);
-                    }}
-                    className="text-sm px-4 py-2 rounded-lg border border-line text-tag-red transition-colors hover:bg-tag-red-soft"
-                  >
-                    {t("delete_case")}
-                  </button>
-                )}
-              </>
-            ) : (
-              <>
-                {row.status !== "in_progress" && (
-                  <button
-                    onClick={() => onUpdateStatus(row.id, "in_progress")}
-                    className="text-sm px-4 py-2 rounded-lg border border-line transition-colors hover:bg-paper-dim"
-                  >
-                    {t("in_progress")}
-                  </button>
-                )}
-
-                <button
-                  onClick={() => onUpdateStatus(row.id, "resolved")}
-                  className="text-sm px-4 py-2 rounded-lg bg-brand text-white transition-colors hover:bg-brand-deep"
-                >
-                  {t("resolve")}
-                </button>
-              </>
-            )}
-          </div>
+              <button
+                onClick={() => onUpdateStatus(row.id, "resolved")}
+                className="text-sm px-4 py-2 rounded-lg bg-brand text-white transition-colors hover:bg-brand-deep"
+              >
+                {t("resolve")}
+              </button>
+            </>
+          )}
         </div>
 
         {mode === "resolved" && confirmingDelete && (
