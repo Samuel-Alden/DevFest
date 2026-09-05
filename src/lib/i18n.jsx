@@ -86,7 +86,7 @@ const STRINGS = {
     no_matching_cases: 'No matching cases.',
     no_resolved_cases: 'No resolved cases yet.',
     no_located_cases: 'No located cases yet.',
-    select_case: 'Select a patient to see the full details.',
+    select_case: 'Select a case to see the full details.',
     symptoms_heading: 'Symptoms',
     notes_heading: 'Notes',
     location_heading: 'Location',
