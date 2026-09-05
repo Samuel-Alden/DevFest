@@ -31,9 +31,14 @@ export async function subscribeToPush() {
     applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
   })
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not signed in')
+
   const { endpoint, keys } = subscription.toJSON()
   const { error } = await supabase.from('push_subscriptions').upsert(
-    { endpoint, p256dh: keys.p256dh, auth: keys.auth },
+    { user_id: user.id, endpoint, p256dh: keys.p256dh, auth: keys.auth },
     { onConflict: 'endpoint' },
   )
   if (error) throw error
