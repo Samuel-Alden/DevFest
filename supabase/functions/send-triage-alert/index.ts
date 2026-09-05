@@ -24,10 +24,7 @@ function json(body: unknown, status = 200) {
 
 Deno.serve(async (req) => {
   if (req.method !== 'POST') return json({ error: 'method not allowed' }, 405)
-
-  // The only legitimate caller is the database INSERT trigger, which has no
-  // user session (the function is deployed --no-verify-jwt). Authenticate it
-  // with the shared secret instead of a JWT.
+  
   if (webhookSecret) {
     if (req.headers.get('x-triage-webhook-secret') !== webhookSecret) {
       return json({ error: 'unauthorized' }, 401)
@@ -50,9 +47,6 @@ Deno.serve(async (req) => {
 
   const supabase = createClient(supabaseUrl, serviceRoleKey)
 
-  // Don't trust the posted record. Re-read the row so `severity` is the
-  // authoritative stored value (after the DB's own severity-floor trigger),
-  // and a forged call with a made-up id simply matches nothing.
   const { data: record, error: recErr } = await supabase
     .from('triage_submissions')
     .select('id, severity')
@@ -70,9 +64,7 @@ Deno.serve(async (req) => {
   if (error) return json({ error: error.message }, 500)
 
   const label = SEVERITY_LABEL[record.severity] ?? record.severity
-  // No patient identifiers in the payload — it surfaces on every subscribed
-  // worker's lock screen and only says a case of this severity arrived. The
-  // details stay behind dashboard auth.
+  
   const notification = JSON.stringify({
     title: `${label} case in TriagePeace`,
     body: `A new ${label.toLowerCase()} case needs triage.`,
