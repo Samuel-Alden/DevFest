@@ -6,10 +6,6 @@ const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 const vapidPublicKey = Deno.env.get('VAPID_PUBLIC_KEY')!
 const vapidPrivateKey = Deno.env.get('VAPID_PRIVATE_KEY')!
 const vapidSubject = Deno.env.get('VAPID_SUBJECT') ?? 'mailto:admin@example.com'
-// Shared secret with the Postgres INSERT trigger (see supabase/push_notifications.sql).
-// If unset, request authentication is skipped so a partial rollout doesn't
-// drop notifications — set it (supabase secrets set TRIAGE_WEBHOOK_SECRET=...)
-// plus the matching Vault secret to activate.
 const webhookSecret = Deno.env.get('TRIAGE_WEBHOOK_SECRET') ?? ''
 
 webpush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey)
