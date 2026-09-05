@@ -21,7 +21,7 @@ export default defineConfig({
         theme_color: '#24505c',
         background_color: '#faf8f4',
         display: 'standalone',
-        start_url: '/intake',
+        start_url: 'https://triagepeace.vercel.app/',
         icons: [
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png' },
