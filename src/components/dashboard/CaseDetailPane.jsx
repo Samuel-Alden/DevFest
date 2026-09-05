@@ -110,8 +110,9 @@ export function CaseDetailPane({
           {t("back_to_queue")}
         </button>
 
-        <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] gap-6 overflow-hidden">
-          <div className="min-h-0 flex flex-col">
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] gap-6">
+          <div>
             <div>
               <span
                 className={`inline-block px-2.5 py-1 rounded text-xs font-semibold ${meta.badge}`}
@@ -180,92 +181,10 @@ export function CaseDetailPane({
               </div>
             )}
 
-            {/* MAP */}
-            {hasLocation && (
-              <div className="mt-5 min-h-0 flex flex-col">
-                <h3 className="text-base font-semibold text-ink mb-2">
-                  {t("location_heading")}
-                </h3>
-
-                <div className="h-[260px] rounded-xl overflow-hidden border border-line">
-                  <CaseMap rows={[row]} onSelect={() => {}} />
-                </div>
-              </div>
-            )}
-
-            {historyEvents.length > 0 && (
-              <div className="mt-5">
-                <button
-                  onClick={() => setShowHistory((v) => !v)}
-                  className="text-sm font-semibold text-ink-soft underline"
-                >
-                  {showHistory ? t("hide_history") : t("view_history")}
-                </button>
-                {showHistory && (
-                  <ul className="mt-2 space-y-1.5 animate-fade-in">
-                    {historyEvents.map((event) => (
-                      <li key={event.id} className="text-xs text-ink-soft">
-                        {event.event_type === "deleted"
-                          ? t("deleted_event_label")
-                          : t(STATUS_LABEL_KEY[event.to_status] ?? event.to_status)}
-                        {" — "}
-                        {event.actor_email ?? t("unknown_actor")}
-                        {" — "}
-                        {new Date(event.created_at).toLocaleString()}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )}
-
-            {/* Buttons */}
-            <div className="mt-4 pt-3 flex gap-2 shrink-0 border-t border-line">
-              {mode === "resolved" ? (
-                <>
-                  <button
-                    onClick={() => onReopen(row.id)}
-                    className="text-sm px-4 py-2 rounded-lg border border-line transition-colors hover:bg-paper-dim"
-                  >
-                    {t("reopen_case")}
-                  </button>
-
-                  {!confirmingDelete && (
-                    <button
-                      onClick={() => {
-                        setConfirmingForId(row.id);
-                        setConfirmingDelete(true);
-                      }}
-                      className="text-sm px-4 py-2 rounded-lg border border-line text-tag-red transition-colors hover:bg-tag-red-soft"
-                    >
-                      {t("delete_case")}
-                    </button>
-                  )}
-                </>
-              ) : (
-                <>
-                  {row.status !== "in_progress" && (
-                    <button
-                      onClick={() => onUpdateStatus(row.id, "in_progress")}
-                      className="text-sm px-4 py-2 rounded-lg border border-line transition-colors hover:bg-paper-dim"
-                    >
-                      {t("in_progress")}
-                    </button>
-                  )}
-
-                  <button
-                    onClick={() => onUpdateStatus(row.id, "resolved")}
-                    className="text-sm px-4 py-2 rounded-lg bg-brand text-white transition-colors hover:bg-brand-deep"
-                  >
-                    {t("resolve")}
-                  </button>
-                </>
-              )}
-            </div>
           </div>
 
           {/* ================= RIGHT ================= */}
-          <div className="min-h-0 overflow-hidden flex flex-col">
+          <div>
             {/* Vitals */}
             {hasVitals && (
               <section>
@@ -443,6 +362,89 @@ export function CaseDetailPane({
                   )}
                 </div>
               </section>
+            )}
+          </div>
+          </div>
+
+          {/* MAP -- full width and its own room, not squeezed into a column */}
+          {hasLocation && (
+            <div className="mt-6">
+              <h3 className="text-base font-semibold text-ink mb-2">
+                {t("location_heading")}
+              </h3>
+              <div className="h-72 rounded-xl overflow-hidden border border-line">
+                <CaseMap rows={[row]} onSelect={() => {}} />
+              </div>
+            </div>
+          )}
+
+          {historyEvents.length > 0 && (
+            <div className="mt-6">
+              <button
+                onClick={() => setShowHistory((v) => !v)}
+                className="text-sm font-semibold text-ink-soft underline"
+              >
+                {showHistory ? t("hide_history") : t("view_history")}
+              </button>
+              {showHistory && (
+                <ul className="mt-2 space-y-1.5 animate-fade-in">
+                  {historyEvents.map((event) => (
+                    <li key={event.id} className="text-xs text-ink-soft">
+                      {event.event_type === "deleted"
+                        ? t("deleted_event_label")
+                        : t(STATUS_LABEL_KEY[event.to_status] ?? event.to_status)}
+                      {" — "}
+                      {event.actor_email ?? t("unknown_actor")}
+                      {" — "}
+                      {new Date(event.created_at).toLocaleString()}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+
+          {/* Buttons */}
+          <div className="mt-6 pt-4 flex gap-2 border-t border-line">
+            {mode === "resolved" ? (
+              <>
+                <button
+                  onClick={() => onReopen(row.id)}
+                  className="text-sm px-4 py-2 rounded-lg border border-line transition-colors hover:bg-paper-dim"
+                >
+                  {t("reopen_case")}
+                </button>
+
+                {!confirmingDelete && (
+                  <button
+                    onClick={() => {
+                      setConfirmingForId(row.id);
+                      setConfirmingDelete(true);
+                    }}
+                    className="text-sm px-4 py-2 rounded-lg border border-line text-tag-red transition-colors hover:bg-tag-red-soft"
+                  >
+                    {t("delete_case")}
+                  </button>
+                )}
+              </>
+            ) : (
+              <>
+                {row.status !== "in_progress" && (
+                  <button
+                    onClick={() => onUpdateStatus(row.id, "in_progress")}
+                    className="text-sm px-4 py-2 rounded-lg border border-line transition-colors hover:bg-paper-dim"
+                  >
+                    {t("in_progress")}
+                  </button>
+                )}
+
+                <button
+                  onClick={() => onUpdateStatus(row.id, "resolved")}
+                  className="text-sm px-4 py-2 rounded-lg bg-brand text-white transition-colors hover:bg-brand-deep"
+                >
+                  {t("resolve")}
+                </button>
+              </>
             )}
           </div>
         </div>
