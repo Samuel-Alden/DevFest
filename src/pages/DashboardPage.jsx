@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { SEVERITY_META } from '../lib/triage'
+import { PushAlertToggle } from '../components/PushAlertToggle'
 
 function sortSubmissions(rows) {
   return [...rows].sort((a, b) => {
@@ -76,12 +77,15 @@ export function DashboardPage() {
           <h1 className="text-2xl font-bold text-neutral-900">Triage Queue</h1>
           <p className="text-sm text-neutral-500">{sorted.length} active case(s)</p>
         </div>
-        <button
-          onClick={() => supabase.auth.signOut()}
-          className="text-sm text-neutral-400 underline"
-        >
-          Sign out
-        </button>
+        <div className="flex flex-col items-end gap-2">
+          <PushAlertToggle />
+          <button
+            onClick={() => supabase.auth.signOut()}
+            className="text-sm text-neutral-400 underline"
+          >
+            Sign out
+          </button>
+        </div>
       </header>
 
       {loadingRows && <p className="text-neutral-400">Loading…</p>}
