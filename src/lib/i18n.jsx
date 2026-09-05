@@ -216,7 +216,7 @@ const STRINGS = {
     no_matching_cases: 'Tidak ada kasus yang cocok.',
     no_resolved_cases: 'Belum ada kasus yang selesai.',
     no_located_cases: 'Belum ada kasus dengan lokasi.',
-    select_case: 'Pilih kasus untuk melihat detail lengkap.',
+    select_case: 'Pilih pasien untuk melihat detail lengkap.',
     symptoms_heading: 'Gejala',
     notes_heading: 'Catatan',
     location_heading: 'Lokasi',

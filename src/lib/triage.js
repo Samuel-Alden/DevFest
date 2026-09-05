@@ -91,7 +91,7 @@ export const VITAL_RANGES = {
   gcsScore: { min: 3, max: 15 },
 }
 
-export const SEVERITY_HEX = { red: '#b3382c', yellow: '#b8791e', green: '#3d7247' }
+export const SEVERITY_HEX = { red: '#b3382c', yellow: '#b8791e', green: '#3d7247', primary: '#153037' }
 
 export const SEVERITY_META = {
   red: {
