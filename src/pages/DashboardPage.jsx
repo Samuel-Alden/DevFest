@@ -205,10 +205,6 @@ export function DashboardPage() {
           >
             <ChartIcon className="h-5 w-5" />
           </Link>
-          <SettingsComponent
-            triggerClassName="border-transparent text-white hover:bg-white/10"
-            showSignOut
-          />
         </div>
       </header>
 

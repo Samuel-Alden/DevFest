@@ -454,7 +454,6 @@ export function IntakePage({ onSubmitted }) {
           <h1 className="text-lg font-bold text-white">{t('intake_title')}</h1>
           <p className="text-xs text-white/70">{t('intake_subtitle')}</p>
         </div>
-        <SettingsComponent triggerClassName="border-white/30 text-white hover:bg-white/10" />
       </header>
 
       <div className="flex-1 min-h-0 overflow-y-auto">
