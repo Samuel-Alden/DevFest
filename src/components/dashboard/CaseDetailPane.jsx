@@ -8,12 +8,12 @@ import { useTranslation, pick } from "../../lib/i18n";
 function Stat({ label, value, flagged }) {
   return (
     <div>
-      <dt className="text-xs text-ink-soft">{label}</dt>
-      <dd
-        className={`text-sm font-medium ${flagged ? "text-tag-red" : "text-ink"}`}
+      <p className="text-sm text-ink-soft">{label}</p>
+      <p
+        className={`text-lg font-semibold ${flagged ? "text-tag-red" : "text-ink"}`}
       >
         {value}
-      </dd>
+      </p>
     </div>
   );
 }
@@ -133,6 +133,17 @@ export function CaseDetailPane({
               )}
             </div>
 
+            {row.complaint_history && (
+              <div className="mt-5">
+                <h3 className="text-base font-semibold text-ink mb-1">
+                  {t("complaint_history_label")}
+                </h3>
+                <p className="text-sm text-ink-soft">
+                  {row.complaint_history}
+                </p>
+              </div>
+            )}
+
             {/* Selected Symptoms ONLY */}
             <div className="mt-5">
               <h3 className="text-base font-semibold text-ink mb-2">
@@ -160,6 +171,15 @@ export function CaseDetailPane({
               </div>
             </div>
 
+            {row.notes && (
+              <div className="mt-5">
+                <h3 className="text-base font-semibold text-ink mb-1">
+                  {t("notes_heading")}
+                </h3>
+                <p className="text-sm text-ink-soft italic">"{row.notes}"</p>
+              </div>
+            )}
+
             {/* MAP */}
             {hasLocation && (
               <div className="mt-5 min-h-0 flex flex-col">
@@ -170,6 +190,32 @@ export function CaseDetailPane({
                 <div className="h-[260px] rounded-xl overflow-hidden border border-line">
                   <CaseMap rows={[row]} onSelect={() => {}} />
                 </div>
+              </div>
+            )}
+
+            {historyEvents.length > 0 && (
+              <div className="mt-5">
+                <button
+                  onClick={() => setShowHistory((v) => !v)}
+                  className="text-sm font-semibold text-ink-soft underline"
+                >
+                  {showHistory ? t("hide_history") : t("view_history")}
+                </button>
+                {showHistory && (
+                  <ul className="mt-2 space-y-1.5 animate-fade-in">
+                    {historyEvents.map((event) => (
+                      <li key={event.id} className="text-xs text-ink-soft">
+                        {event.event_type === "deleted"
+                          ? t("deleted_event_label")
+                          : t(STATUS_LABEL_KEY[event.to_status] ?? event.to_status)}
+                        {" — "}
+                        {event.actor_email ?? t("unknown_actor")}
+                        {" — "}
+                        {new Date(event.created_at).toLocaleString()}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             )}
 
@@ -220,9 +266,47 @@ export function CaseDetailPane({
 
           {/* ================= RIGHT ================= */}
           <div className="min-h-0 overflow-hidden flex flex-col">
+            {/* Vitals */}
+            {hasVitals && (
+              <section>
+                <h3 className="text-lg font-semibold text-ink mb-4">
+                  {t("section_vitals")}
+                </h3>
+                <div className="grid grid-cols-2 gap-x-8 gap-y-5">
+                  {(row.systolic_bp != null || row.diastolic_bp != null) && (
+                    <Stat
+                      label={t("blood_pressure_label")}
+                      value={`${row.systolic_bp ?? "—"} / ${row.diastolic_bp ?? "—"}`}
+                    />
+                  )}
+                  {row.pulse_rate != null && (
+                    <Stat label={t("pulse_rate")} value={row.pulse_rate} />
+                  )}
+                  {row.respiratory_rate != null && (
+                    <Stat
+                      label={t("respiratory_rate")}
+                      value={row.respiratory_rate}
+                    />
+                  )}
+                  {row.body_temperature != null && (
+                    <Stat
+                      label={t("body_temperature")}
+                      value={row.body_temperature}
+                    />
+                  )}
+                  {row.oxygen_saturation != null && (
+                    <Stat
+                      label={t("oxygen_saturation")}
+                      value={row.oxygen_saturation}
+                    />
+                  )}
+                </div>
+              </section>
+            )}
+
             {/* Consciousness */}
             {hasConsciousness && (
-              <section>
+              <section className={hasVitals ? "mt-8" : ""}>
                 <h3 className="text-lg font-semibold text-ink mb-4">
                   {t("section_consciousness")}
                 </h3>
@@ -324,6 +408,40 @@ export function CaseDetailPane({
                       : ""}
                   </p>
                 )}
+              </section>
+            )}
+
+            {hasMedicalHistory && (
+              <section className="mt-8">
+                <h3 className="text-lg font-semibold text-ink mb-4">
+                  {t("section_medical_history")}
+                </h3>
+                <div className="space-y-3 text-sm text-ink">
+                  {row.drug_allergies && (
+                    <p>
+                      <span className="text-ink-soft">
+                        {t("drug_allergies")}:{" "}
+                      </span>
+                      {row.drug_allergies}
+                    </p>
+                  )}
+                  {row.comorbidities && (
+                    <p>
+                      <span className="text-ink-soft">
+                        {t("comorbidities")}:{" "}
+                      </span>
+                      {row.comorbidities}
+                    </p>
+                  )}
+                  {row.current_medications && (
+                    <p>
+                      <span className="text-ink-soft">
+                        {t("current_medications")}:{" "}
+                      </span>
+                      {row.current_medications}
+                    </p>
+                  )}
+                </div>
               </section>
             )}
           </div>
