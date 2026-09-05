@@ -4,13 +4,10 @@ create table if not exists push_subscriptions (
   endpoint text not null unique,
   p256dh text not null,
   auth text not null,
-  -- Which severities this device wants alerts for. Filtered in the Edge Function,
-  -- not the trigger, so one insert can fan out differently per subscriber.
   notify_severities text[] not null default array['red'],
   created_at timestamptz not null default now()
 );
 
--- Safe to re-run: adds the column if this table already existed from an earlier version.
 alter table push_subscriptions add column if not exists notify_severities text[] not null default array['red'];
 
 alter table push_subscriptions enable row level security;
@@ -21,8 +18,6 @@ create policy "users manage their own push subscription"
   to authenticated
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
-
--- The edge function reads all subscriptions with the service role key, bypassing RLS.
 
 create extension if not exists pg_net with schema extensions;
 
@@ -39,9 +34,7 @@ begin
         ''
       )
     ),
-    -- The full row is still sent (so an older deployed function keeps working
-    -- during a rollout), but the hardened function trusts NONE of it except
-    -- `record.id`, which it uses to re-read the row for authoritative severity.
+
     body := jsonb_build_object('type', 'INSERT', 'table', 'triage_submissions', 'record', to_jsonb(new))
   );
   return new;
