@@ -24,7 +24,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
-            {/* <Route path="/settings" element={<SettingsPage />} /> */}
+            <Route path="/settings" element={<SettingsPage />} />
           </Routes>
         </BrowserRouter>
       </LanguageProvider>

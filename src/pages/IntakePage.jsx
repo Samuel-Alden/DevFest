@@ -5,6 +5,7 @@ import { submitIntake } from '../lib/queue'
 import { getDeviceId } from '../lib/deviceId'
 import { getCurrentPosition } from '../lib/geolocation'
 import { useTranslation, pick } from '../lib/i18n'
+import { SettingsComponent } from '../components/SettingsComponent'
 
 const emptyForm = {
   patientName: '',
