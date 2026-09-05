@@ -21,7 +21,7 @@ export async function getPushSubscriptionState() {
   return existing ? 'subscribed' : 'unsubscribed'
 }
 
-export async function subscribeToPush() {
+export async function subscribeToPush(severities = ['red']) {
   const permission = await Notification.requestPermission()
   if (permission !== 'granted') throw new Error('Notification permission denied')
 
@@ -38,10 +38,37 @@ export async function subscribeToPush() {
 
   const { endpoint, keys } = subscription.toJSON()
   const { error } = await supabase.from('push_subscriptions').upsert(
-    { user_id: user.id, endpoint, p256dh: keys.p256dh, auth: keys.auth },
+    { user_id: user.id, endpoint, p256dh: keys.p256dh, auth: keys.auth, notify_severities: severities },
     { onConflict: 'endpoint' },
   )
   if (error) throw error
 
   return subscription
+}
+
+export async function getNotifyPreferences() {
+  const registration = await navigator.serviceWorker.ready
+  const subscription = await registration.pushManager.getSubscription()
+  if (!subscription) return null
+
+  const { data, error } = await supabase
+    .from('push_subscriptions')
+    .select('notify_severities')
+    .eq('endpoint', subscription.endpoint)
+    .maybeSingle()
+  if (error) throw error
+
+  return data?.notify_severities ?? []
+}
+
+export async function updateNotifyPreferences(severities) {
+  const registration = await navigator.serviceWorker.ready
+  const subscription = await registration.pushManager.getSubscription()
+  if (!subscription) throw new Error('Not subscribed')
+
+  const { error } = await supabase
+    .from('push_subscriptions')
+    .update({ notify_severities: severities })
+    .eq('endpoint', subscription.endpoint)
+  if (error) throw error
 }

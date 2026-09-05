@@ -9,23 +9,33 @@ const vapidSubject = Deno.env.get('VAPID_SUBJECT') ?? 'mailto:admin@example.com'
 
 webpush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey)
 
+const SEVERITY_LABEL: Record<string, string> = {
+  red: 'Emergency',
+  yellow: 'Urgent',
+  green: 'Routine',
+}
+
 Deno.serve(async (req) => {
   const payload = await req.json()
   const record = payload.record
 
-  if (!record || record.severity !== 'red') {
+  if (!record?.severity) {
     return new Response(JSON.stringify({ skipped: true }), { status: 200 })
   }
 
   const supabase = createClient(supabaseUrl, serviceRoleKey)
-  const { data: subscriptions, error } = await supabase.from('push_subscriptions').select('*')
+  const { data: subscriptions, error } = await supabase
+    .from('push_subscriptions')
+    .select('*')
+    .contains('notify_severities', [record.severity])
 
   if (error) {
     return new Response(JSON.stringify({ error: error.message }), { status: 500 })
   }
 
-  const title = 'Emergency case in TriagePeace'
-  const body = `${record.patient_name || 'Unnamed patient'}${record.age ? ` (${record.age})` : ''} needs immediate attention.`
+  const label = SEVERITY_LABEL[record.severity] ?? record.severity
+  const title = `${label} case in TriagePeace`
+  const body = `${record.patient_name || 'Unnamed patient'}${record.age ? ` (${record.age})` : ''} — ${label.toLowerCase()} triage.`
 
   const results = await Promise.allSettled(
     (subscriptions ?? []).map((sub) =>
