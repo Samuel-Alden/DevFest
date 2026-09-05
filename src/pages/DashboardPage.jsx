@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { SEVERITY_META, SYMPTOM_OPTIONS } from '../lib/triage'
@@ -7,15 +7,14 @@ import { PushAlertToggle } from '../components/PushAlertToggle'
 import { CaseListPane } from '../components/dashboard/CaseListPane'
 import { CaseDetailPane } from '../components/dashboard/CaseDetailPane'
 import { StatsRow } from '../components/dashboard/StatsRow'
-import { BellIcon, LogoutIcon } from '../components/icons'
+import { BellIcon, SettingsIcon } from '../components/icons'
 import { useTranslation } from '../lib/i18n'
-import { LanguageToggle } from '../components/LanguageToggle'
 
 function sortActive(rows) {
   return [...rows].sort((a, b) => {
     const orderDiff = SEVERITY_META[a.severity].order - SEVERITY_META[b.severity].order
     if (orderDiff !== 0) return orderDiff
-    return new Date(a.created_at) - new Date(b.created_at)
+    return new Date(b.created_at) - new Date(a.created_at)
   })
 }
 
@@ -138,6 +137,12 @@ export function DashboardPage() {
     setSelectedId(null)
   }
 
+  const deleteCase = async (id) => {
+    await supabase.from('triage_submissions').delete().eq('id', id)
+    setResolvedRows((current) => current.filter((r) => r.id !== id))
+    setSelectedId(null)
+  }
+
   const sortedRows = sortActive(rows)
   const sortedResolvedRows = sortResolved(resolvedRows)
   const currentRows = viewMode === 'active' ? sortedRows : sortedResolvedRows
@@ -152,7 +157,6 @@ export function DashboardPage() {
           <p className="text-xs text-white/70">{t('active_cases', sortedRows.length)}</p>
         </div>
         <div className="flex items-center gap-1">
-          <LanguageToggle className="!border-white/30 !text-white hover:!bg-white/10 mr-1" />
           <div className="relative">
             <button
               onClick={() => setShowAlertMenu((v) => !v)}
@@ -170,13 +174,13 @@ export function DashboardPage() {
               </>
             )}
           </div>
-          <button
-            onClick={() => supabase.auth.signOut()}
-            aria-label={t('sign_out')}
+          <Link
+            to="/settings"
+            aria-label={t('settings_title')}
             className="p-2 rounded-lg transition-colors hover:bg-white/10 text-white"
           >
-            <LogoutIcon className="h-5 w-5" />
-          </button>
+            <SettingsIcon className="h-5 w-5" />
+          </Link>
         </div>
       </header>
 
@@ -202,6 +206,7 @@ export function DashboardPage() {
           onBack={() => setSelectedId(null)}
           onUpdateStatus={updateStatus}
           onReopen={reopenCase}
+          onDelete={deleteCase}
           className={`${selectedId ? 'flex' : 'hidden'} md:flex w-full`}
         />
       </div>

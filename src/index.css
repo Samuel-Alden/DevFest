@@ -43,6 +43,25 @@
   color-scheme: light;
 }
 
+/* Dark mode: override the same semantic tokens rather than adding dark:
+   variants everywhere -- every component already reads bg-paper/text-ink/
+   border-line, so re-pointing those CSS variables re-themes the whole app. */
+.dark {
+  color-scheme: dark;
+
+  --color-paper: #1b1d1e;
+  --color-paper-dim: #262829;
+  --color-ink: #edece9;
+  --color-ink-soft: #a3a19b;
+  --color-line: #3a3b3a;
+
+  --color-brand-soft: #1c2e32;
+
+  --color-tag-red-soft: #3a2420;
+  --color-tag-amber-soft: #3a301d;
+  --color-tag-green-soft: #223026;
+}
+
 body {
   margin: 0;
   font-family: var(--font-sans);

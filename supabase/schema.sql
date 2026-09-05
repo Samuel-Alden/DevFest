@@ -44,6 +44,14 @@ create policy "authenticated can update submissions"
   using (true)
   with check (true);
 
+-- Health workers can permanently delete a resolved case (the UI only
+-- exposes this behind a 2-step confirm, but RLS still needs to allow it).
+drop policy if exists "authenticated can delete submissions" on triage_submissions;
+create policy "authenticated can delete submissions"
+  on triage_submissions for delete
+  to authenticated
+  using (true);
+
 -- Enable Realtime for the dashboard's live queue.
 do $$
 begin

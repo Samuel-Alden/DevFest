@@ -1,10 +1,20 @@
+import { useState } from 'react'
 import { SEVERITY_META, SYMPTOM_OPTIONS } from '../../lib/triage'
 import { BackIcon } from '../icons'
 import { CaseMap } from './CaseMap'
 import { useTranslation, pick } from '../../lib/i18n'
 
-export function CaseDetailPane({ row, mode = 'active', onBack, onUpdateStatus, onReopen, className = '' }) {
+export function CaseDetailPane({ row, mode = 'active', onBack, onUpdateStatus, onReopen, onDelete, className = '' }) {
   const { t, lang } = useTranslation()
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [confirmingForId, setConfirmingForId] = useState(null)
+
+  // Reset the armed delete-confirm state when the selected case changes,
+  // without an effect -- this runs during render, so switching cases can't
+  // flash the previous case's confirm box for a frame before it clears.
+  if (row?.id !== confirmingForId && confirmingDelete) {
+    setConfirmingDelete(false)
+  }
 
   if (!row) {
     return (
@@ -72,14 +82,47 @@ export function CaseDetailPane({ row, mode = 'active', onBack, onUpdateStatus, o
           </div>
         )}
 
+        {mode === 'resolved' && confirmingDelete && (
+          <div className="mt-6 rounded-lg border border-tag-red bg-tag-red-soft p-3 animate-fade-in">
+            <p className="text-sm text-ink">{t('delete_confirm_prompt')}</p>
+            <div className="mt-3 flex gap-2">
+              <button
+                onClick={() => onDelete(row.id)}
+                className="text-sm px-4 py-2 rounded-lg bg-tag-red text-white transition-colors hover:opacity-90"
+              >
+                {t('confirm_delete')}
+              </button>
+              <button
+                onClick={() => setConfirmingDelete(false)}
+                className="text-sm px-4 py-2 rounded-lg border border-line transition-colors hover:bg-paper-dim"
+              >
+                {t('cancel')}
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="mt-6 flex gap-2">
           {mode === 'resolved' ? (
-            <button
-              onClick={() => onReopen(row.id)}
-              className="text-sm px-4 py-2 rounded-lg border border-line transition-colors hover:bg-paper-dim"
-            >
-              {t('reopen_case')}
-            </button>
+            <>
+              <button
+                onClick={() => onReopen(row.id)}
+                className="text-sm px-4 py-2 rounded-lg border border-line transition-colors hover:bg-paper-dim"
+              >
+                {t('reopen_case')}
+              </button>
+              {!confirmingDelete && (
+                <button
+                  onClick={() => {
+                    setConfirmingForId(row.id)
+                    setConfirmingDelete(true)
+                  }}
+                  className="text-sm px-4 py-2 rounded-lg border border-line text-tag-red transition-colors hover:bg-tag-red-soft"
+                >
+                  {t('delete_case')}
+                </button>
+              )}
+            </>
           ) : (
             <>
               {row.status !== 'in_progress' && (

@@ -4,6 +4,9 @@ const STORAGE_KEY = 'triagepeace-lang'
 
 const STRINGS = {
   en: {
+    landing_tagline: 'Offline-ready symptom intake for clinics with unreliable connectivity.',
+    start_intake: 'Submit a case',
+
     intake_title: 'Symptom Intake',
     intake_subtitle: "Works offline. Submissions sync automatically once you're back online.",
     saved: 'Saved.',
@@ -46,6 +49,11 @@ const STRINGS = {
     in_progress: 'In progress',
     resolve: 'Resolve',
     reopen_case: 'Reopen case',
+    delete_case: 'Delete case',
+    delete_confirm_prompt: "Delete this case permanently? This can't be undone.",
+    confirm_delete: 'Yes, delete',
+    cancel: 'Cancel',
+    back: 'Back',
     back_to_queue: 'Back to queue',
     unnamed_patient: 'Unnamed patient',
     no_symptoms_recorded: 'No symptoms recorded',
@@ -66,8 +74,17 @@ const STRINGS = {
 
     sign_out: 'Sign out',
     notification_settings: 'Notification settings',
+
+    settings_title: 'Settings',
+    language_label: 'Language',
+    appearance_label: 'Appearance',
+    dark_mode: 'Dark mode',
+    light_mode: 'Light mode',
   },
   id: {
+    landing_tagline: 'Formulir gejala yang bisa dipakai tanpa internet, untuk klinik dengan koneksi tidak stabil.',
+    start_intake: 'Isi formulir kasus',
+
     intake_title: 'Formulir Gejala',
     intake_subtitle: 'Berfungsi tanpa internet. Data akan tersinkron otomatis saat kembali online.',
     saved: 'Tersimpan.',
@@ -110,6 +127,11 @@ const STRINGS = {
     in_progress: 'Sedang ditangani',
     resolve: 'Selesaikan',
     reopen_case: 'Buka kembali',
+    delete_case: 'Hapus kasus',
+    delete_confirm_prompt: 'Hapus kasus ini secara permanen? Tindakan ini tidak dapat dibatalkan.',
+    confirm_delete: 'Ya, hapus',
+    cancel: 'Batal',
+    back: 'Kembali',
     back_to_queue: 'Kembali ke antrean',
     unnamed_patient: 'Pasien tanpa nama',
     no_symptoms_recorded: 'Tidak ada gejala tercatat',
@@ -130,6 +152,12 @@ const STRINGS = {
 
     sign_out: 'Keluar',
     notification_settings: 'Pengaturan notifikasi',
+
+    settings_title: 'Pengaturan',
+    language_label: 'Bahasa',
+    appearance_label: 'Tampilan',
+    dark_mode: 'Mode gelap',
+    light_mode: 'Mode terang',
   },
 }
 

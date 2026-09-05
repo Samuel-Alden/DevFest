@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/useAuth'
 import { useTranslation } from '../lib/i18n'
 import { LanguageToggle } from '../components/LanguageToggle'
+import { BackIcon } from '../components/icons'
 
 export function LoginPage() {
   const { session, loading } = useAuth()
@@ -26,6 +27,9 @@ export function LoginPage() {
 
   return (
     <div className="max-w-sm mx-auto p-4 mt-16">
+      <Link to="/" className="flex items-center gap-1 text-sm text-ink-soft mb-6 w-fit">
+        <BackIcon className="h-4 w-4" /> {t('back')}
+      </Link>
       <div className="flex items-start justify-between gap-3 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-ink mb-1">{t('clinic_login')}</h1>
