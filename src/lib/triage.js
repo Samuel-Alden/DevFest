@@ -75,6 +75,22 @@ export function assessmentEscalatesSeverity(assessment = {}) {
   return false
 }
 
+// Physiologically-possible bounds for a living person -- deliberately wide
+// safety margins, not clinical danger lines (those live in
+// assessmentEscalatesSeverity() above). This is about catching a mistyped
+// value (an extra digit, a missing decimal point) before it's stored, not
+// about flagging a genuinely sick patient.
+export const VITAL_RANGES = {
+  age: { min: 0, max: 120 },
+  systolicBp: { min: 40, max: 300 },
+  diastolicBp: { min: 20, max: 200 },
+  pulseRate: { min: 20, max: 300 },
+  respiratoryRate: { min: 4, max: 60 },
+  bodyTemperature: { min: 25, max: 45 },
+  oxygenSaturation: { min: 0, max: 100 },
+  gcsScore: { min: 3, max: 15 },
+}
+
 export const SEVERITY_HEX = { red: '#b3382c', yellow: '#b8791e', green: '#3d7247' }
 
 export const SEVERITY_META = {

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { supabase } from '../../lib/supabase'
 import { SEVERITY_META, SYMPTOM_OPTIONS } from '../../lib/triage'
 import { BackIcon } from '../icons'
 import { CaseMap } from './CaseMap'
@@ -13,10 +14,14 @@ function Stat({ label, value, flagged }) {
   )
 }
 
+const STATUS_LABEL_KEY = { pending: 'status_pending', in_progress: 'in_progress', resolved: 'status_resolved_label' }
+
 export function CaseDetailPane({ row, mode = 'active', onBack, onUpdateStatus, onReopen, onDelete, className = '' }) {
   const { t, lang } = useTranslation()
   const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [confirmingForId, setConfirmingForId] = useState(null)
+  const [showHistory, setShowHistory] = useState(false)
+  const [historyEvents, setHistoryEvents] = useState([])
 
   // Reset the armed delete-confirm state when the selected case changes,
   // without an effect -- this runs during render, so switching cases can't
@@ -24,6 +29,26 @@ export function CaseDetailPane({ row, mode = 'active', onBack, onUpdateStatus, o
   if (row?.id !== confirmingForId && confirmingDelete) {
     setConfirmingDelete(false)
   }
+
+  useEffect(() => {
+    setShowHistory(false)
+    setHistoryEvents([])
+    if (!row) return
+    let cancelled = false
+    supabase
+      .from('case_events')
+      .select('*')
+      .eq('submission_id', row.id)
+      .order('created_at', { ascending: false })
+      .limit(20)
+      .then(({ data }) => {
+        if (!cancelled) setHistoryEvents(data ?? [])
+      })
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [row?.id])
 
   if (!row) {
     return (
@@ -190,6 +215,32 @@ export function CaseDetailPane({ row, mode = 'active', onBack, onUpdateStatus, o
             <div className="h-48 rounded-lg overflow-hidden border border-line">
               <CaseMap rows={[row]} onSelect={() => {}} />
             </div>
+          </div>
+        )}
+
+        {historyEvents.length > 0 && (
+          <div className="mt-5">
+            <button
+              onClick={() => setShowHistory((v) => !v)}
+              className="text-sm font-semibold text-ink-soft underline"
+            >
+              {showHistory ? t('hide_history') : t('view_history')}
+            </button>
+            {showHistory && (
+              <ul className="mt-2 space-y-1.5 animate-fade-in">
+                {historyEvents.map((event) => (
+                  <li key={event.id} className="text-xs text-ink-soft">
+                    {event.event_type === 'deleted'
+                      ? t('deleted_event_label')
+                      : t(STATUS_LABEL_KEY[event.to_status] ?? event.to_status)}
+                    {' — '}
+                    {event.actor_email ?? t('unknown_actor')}
+                    {' — '}
+                    {new Date(event.created_at).toLocaleString()}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         )}
 

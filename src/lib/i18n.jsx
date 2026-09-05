@@ -54,6 +54,15 @@ const STRINGS = {
     current_medications: 'Current medications',
     family_aware_hint: 'If the patient or family knows, they can share it',
 
+    value_out_of_range: (min, max) => `Must be between ${min} and ${max}`,
+
+    view_history: 'View history',
+    hide_history: 'Hide history',
+    status_pending: 'Pending',
+    status_resolved_label: 'Resolved',
+    deleted_event_label: 'Deleted',
+    unknown_actor: 'Unknown',
+
     avpu_alert: 'Alert',
     avpu_voice: 'Voice',
     avpu_pain: 'Pain',
@@ -174,6 +183,15 @@ const STRINGS = {
     comorbidities: 'Penyakit penyerta',
     current_medications: 'Obat yang sedang dikonsumsi',
     family_aware_hint: 'Jika pasien atau keluarga tahu, boleh diisi',
+
+    value_out_of_range: (min, max) => `Harus di antara ${min} dan ${max}`,
+
+    view_history: 'Lihat riwayat',
+    hide_history: 'Sembunyikan riwayat',
+    status_pending: 'Menunggu',
+    status_resolved_label: 'Selesai',
+    deleted_event_label: 'Dihapus',
+    unknown_actor: 'Tidak diketahui',
 
     avpu_alert: 'Sadar penuh',
     avpu_voice: 'Respons suara',

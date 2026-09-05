@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { SYMPTOM_OPTIONS, computeSeverity, assessmentEscalatesSeverity, SEVERITY_META } from '../lib/triage'
+import { SYMPTOM_OPTIONS, computeSeverity, assessmentEscalatesSeverity, SEVERITY_META, VITAL_RANGES } from '../lib/triage'
 import { submitIntake } from '../lib/queue'
 import { getDeviceId } from '../lib/deviceId'
 import { getCurrentPosition } from '../lib/geolocation'
@@ -60,7 +60,7 @@ function Card({ title, children }) {
   )
 }
 
-function TextField({ label, value, onChange, placeholder, type = 'text', step, min, max }) {
+function TextField({ label, value, onChange, placeholder, type = 'text', step, min, max, error }) {
   return (
     <label className="block">
       <span className="text-sm font-medium text-ink">{label}</span>
@@ -72,8 +72,9 @@ function TextField({ label, value, onChange, placeholder, type = 'text', step, m
         step={step}
         min={min}
         max={max}
-        className={inputClasses}
+        className={`${inputClasses} ${error ? '!border-tag-red focus:!ring-tag-red-soft' : ''}`}
       />
+      {error && <p className="mt-1 text-xs text-tag-red">{error}</p>}
     </label>
   )
 }
@@ -115,12 +116,20 @@ function SegmentedToggle({ label, value, onChange, options }) {
   )
 }
 
-function PatientInfoSection({ form, setField, t }) {
+function PatientInfoSection({ form, setField, t, fieldErrors }) {
   return (
     <Card title={t('section_patient_info')}>
       <TextField label={t('patient_name')} value={form.patientName} onChange={setField('patientName')} placeholder={t('optional')} />
       <div className="grid grid-cols-2 gap-3">
-        <TextField label={t('age')} type="number" min="0" value={form.age} onChange={setField('age')} />
+        <TextField
+          label={t('age')}
+          type="number"
+          min={VITAL_RANGES.age.min}
+          max={VITAL_RANGES.age.max}
+          value={form.age}
+          onChange={setField('age')}
+          error={fieldErrors.age}
+        />
         <TextField label={t('address')} value={form.address} onChange={setField('address')} placeholder={t('optional')} />
       </div>
     </Card>
@@ -179,28 +188,71 @@ function NotesSection({ form, setField, t }) {
   )
 }
 
-function VitalsSection({ form, setField, t }) {
+function VitalsSection({ form, setField, t, fieldErrors }) {
   return (
     <Card title={t('section_vitals')}>
       <div className="grid grid-cols-2 gap-3">
-        <TextField label={t('systolic_bp')} type="number" value={form.systolicBp} onChange={setField('systolicBp')} />
-        <TextField label={t('diastolic_bp')} type="number" value={form.diastolicBp} onChange={setField('diastolicBp')} />
-        <TextField label={t('pulse_rate')} type="number" value={form.pulseRate} onChange={setField('pulseRate')} />
-        <TextField label={t('respiratory_rate')} type="number" value={form.respiratoryRate} onChange={setField('respiratoryRate')} />
+        <TextField
+          label={t('systolic_bp')}
+          type="number"
+          min={VITAL_RANGES.systolicBp.min}
+          max={VITAL_RANGES.systolicBp.max}
+          value={form.systolicBp}
+          onChange={setField('systolicBp')}
+          error={fieldErrors.systolicBp}
+        />
+        <TextField
+          label={t('diastolic_bp')}
+          type="number"
+          min={VITAL_RANGES.diastolicBp.min}
+          max={VITAL_RANGES.diastolicBp.max}
+          value={form.diastolicBp}
+          onChange={setField('diastolicBp')}
+          error={fieldErrors.diastolicBp}
+        />
+        <TextField
+          label={t('pulse_rate')}
+          type="number"
+          min={VITAL_RANGES.pulseRate.min}
+          max={VITAL_RANGES.pulseRate.max}
+          value={form.pulseRate}
+          onChange={setField('pulseRate')}
+          error={fieldErrors.pulseRate}
+        />
+        <TextField
+          label={t('respiratory_rate')}
+          type="number"
+          min={VITAL_RANGES.respiratoryRate.min}
+          max={VITAL_RANGES.respiratoryRate.max}
+          value={form.respiratoryRate}
+          onChange={setField('respiratoryRate')}
+          error={fieldErrors.respiratoryRate}
+        />
         <TextField
           label={t('body_temperature')}
           type="number"
           step="0.1"
+          min={VITAL_RANGES.bodyTemperature.min}
+          max={VITAL_RANGES.bodyTemperature.max}
           value={form.bodyTemperature}
           onChange={setField('bodyTemperature')}
+          error={fieldErrors.bodyTemperature}
         />
-        <TextField label={t('oxygen_saturation')} type="number" value={form.oxygenSaturation} onChange={setField('oxygenSaturation')} />
+        <TextField
+          label={t('oxygen_saturation')}
+          type="number"
+          min={VITAL_RANGES.oxygenSaturation.min}
+          max={VITAL_RANGES.oxygenSaturation.max}
+          value={form.oxygenSaturation}
+          onChange={setField('oxygenSaturation')}
+          error={fieldErrors.oxygenSaturation}
+        />
       </div>
     </Card>
   )
 }
 
-function ConsciousnessSection({ form, setField, t }) {
+function ConsciousnessSection({ form, setField, t, fieldErrors }) {
   return (
     <Card title={t('section_consciousness')}>
       <SegmentedToggle
@@ -213,7 +265,15 @@ function ConsciousnessSection({ form, setField, t }) {
         ]}
       />
       {form.consciousnessScale === 'gcs' && (
-        <TextField label={t('gcs_score_label')} type="number" min="3" max="15" value={form.gcsScore} onChange={setField('gcsScore')} />
+        <TextField
+          label={t('gcs_score_label')}
+          type="number"
+          min={VITAL_RANGES.gcsScore.min}
+          max={VITAL_RANGES.gcsScore.max}
+          value={form.gcsScore}
+          onChange={setField('gcsScore')}
+          error={fieldErrors.gcsScore}
+        />
       )}
       {form.consciousnessScale === 'avpu' && (
         <SegmentedToggle
@@ -289,6 +349,7 @@ export function IntakePage({ onSubmitted }) {
   const [form, setForm] = useState(emptyForm)
   const [lastResult, setLastResult] = useState(null)
   const [submitting, setSubmitting] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState({})
 
   const setField = (key) => (value) => setForm((f) => ({ ...f, [key]: value }))
 
@@ -299,8 +360,33 @@ export function IntakePage({ onSubmitted }) {
     }))
   }
 
+  // Physiologically-plausible-range check (VITAL_RANGES) -- distinct from
+  // assessmentEscalatesSeverity()'s "is this dangerous" thresholds. Native
+  // number-input min/max already blocks most of this in-browser; this is a
+  // second layer so a value that slips through still gets a clear in-app
+  // message instead of a silent DB rejection stuck in the offline queue.
+  const validateVitals = () => {
+    const errors = {}
+    for (const [field, range] of Object.entries(VITAL_RANGES)) {
+      const raw = form[field]
+      if (raw === '' || raw == null) continue
+      const num = Number(raw)
+      if (Number.isNaN(num) || num < range.min || num > range.max) {
+        errors[field] = t('value_out_of_range', range.min, range.max)
+      }
+    }
+    return errors
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    const errors = validateVitals()
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors)
+      return
+    }
+    setFieldErrors({})
     setSubmitting(true)
 
     const num = (v) => (v === '' || v == null ? null : Number(v))
@@ -390,15 +476,15 @@ export function IntakePage({ onSubmitted }) {
 
           <form onSubmit={handleSubmit} className="md:grid md:grid-cols-2 md:gap-4 md:items-start space-y-4 md:space-y-0">
             <div className="space-y-4">
-              <PatientInfoSection form={form} setField={setField} t={t} />
+              <PatientInfoSection form={form} setField={setField} t={t} fieldErrors={fieldErrors} />
               <ComplaintHistorySection form={form} setField={setField} t={t} />
               <SymptomsSection form={form} toggleSymptom={toggleSymptom} t={t} lang={lang} />
               <NotesSection form={form} setField={setField} t={t} />
             </div>
 
             <div className="space-y-4">
-              <VitalsSection form={form} setField={setField} t={t} />
-              <ConsciousnessSection form={form} setField={setField} t={t} />
+              <VitalsSection form={form} setField={setField} t={t} fieldErrors={fieldErrors} />
+              <ConsciousnessSection form={form} setField={setField} t={t} fieldErrors={fieldErrors} />
               <PrimarySurveySection form={form} setField={setField} t={t} />
               <MedicalHistorySection form={form} setField={setField} t={t} />
             </div>
