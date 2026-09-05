@@ -37,6 +37,7 @@ export async function queueSize() {
 // Attempts to send one payload straight to Supabase. Returns true on success.
 export async function trySubmit(payload) {
   const { error } = await supabase.from('triage_submissions').insert(payload)
+  if (error) console.error('[queue] submission failed to sync:', error.message, error)
   return !error
 }
 
