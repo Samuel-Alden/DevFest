@@ -9,7 +9,7 @@ import { CaseDetailPane } from "../components/dashboard/CaseDetailPane";
 import { StatsRow } from "../components/dashboard/StatsRow";
 import { BellIcon, ChartIcon } from "../components/icons";
 import { useTranslation } from "../lib/i18n";
-import { SettingsComponent } from "../components/settingsComponent";
+import { SettingsComponent } from "../components/SettingsComponent";
 
 function sortActive(rows) {
   return [...rows].sort((a, b) => {
@@ -205,6 +205,10 @@ export function DashboardPage() {
           >
             <ChartIcon className="h-5 w-5" />
           </Link>
+          <SettingsComponent
+            triggerClassName="border-transparent text-white hover:bg-white/10"
+            showSignOut
+          />
         </div>
       </header>
 
