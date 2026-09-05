@@ -31,4 +31,4 @@ supabase/.temp
 
 # Claude
 .claude
-CLAUDE.md
+/CLAUDE.md
