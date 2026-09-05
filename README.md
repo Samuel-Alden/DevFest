@@ -1,4 +1,4 @@
-# TriageLink
+# TriagePeace
 
 Offline-first symptom intake PWA for low-connectivity clinics. Field workers fill a symptom form with **zero network**; it queues locally and auto-syncs to a clinic dashboard the moment connectivity returns, auto-triaged by severity (red/yellow/green).
 
