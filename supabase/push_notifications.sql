@@ -4,6 +4,15 @@
 -- it by URL. The Authorization header below uses the publishable anon key, which is
 -- already public (it ships in the client bundle) -- RLS is what actually protects
 -- data, not this key's secrecy. If you rotate project keys, update the URL/key here.
+--
+-- The function is deployed --no-verify-jwt (the trigger has no user session), so
+-- it is authenticated instead by a shared secret sent in x-triage-webhook-secret
+-- and checked against TRIAGE_WEBHOOK_SECRET in the function. Provision it once:
+--   -- pick one random value, use it in BOTH places:
+--   select vault.create_secret('<random-64-hex>', 'triage_webhook_secret');
+--   npx supabase secrets set TRIAGE_WEBHOOK_SECRET='<same-random-64-hex>'
+-- Until both are set the function logs a warning and skips the check (so this
+-- SQL can be applied before the function is redeployed without dropping alerts).
 
 create table if not exists push_subscriptions (
   id uuid primary key default gen_random_uuid(),
@@ -40,8 +49,15 @@ begin
     url := 'https://jnooylfjxefbyozvlaqa.supabase.co/functions/v1/send-triage-alert',
     headers := jsonb_build_object(
       'Content-Type', 'application/json',
-      'Authorization', 'Bearer sb_publishable_9QqlcRpdud3NcZx0eRFHLw_2xyyS-NY'
+      'Authorization', 'Bearer sb_publishable_9QqlcRpdud3NcZx0eRFHLw_2xyyS-NY',
+      'x-triage-webhook-secret', coalesce(
+        (select decrypted_secret from vault.decrypted_secrets where name = 'triage_webhook_secret'),
+        ''
+      )
     ),
+    -- The full row is still sent (so an older deployed function keeps working
+    -- during a rollout), but the hardened function trusts NONE of it except
+    -- `record.id`, which it uses to re-read the row for authoritative severity.
     body := jsonb_build_object('type', 'INSERT', 'table', 'triage_submissions', 'record', to_jsonb(new))
   );
   return new;
