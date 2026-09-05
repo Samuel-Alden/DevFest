@@ -14,17 +14,30 @@ create table if not exists triage_submissions (
 alter table triage_submissions enable row level security;
 
 -- Anonymous field devices can submit new intake forms, nothing else.
+drop policy if exists "anon can insert submissions" on triage_submissions;
 create policy "anon can insert submissions"
   on triage_submissions for insert
   to anon
   with check (true);
 
+-- A health worker who's logged in on the same device (e.g. a shared clinic
+-- tablet) can also submit intake forms -- the Supabase client attaches
+-- whichever session is active in that browser to every request, so without
+-- this an authenticated session on /dashboard makes /intake submissions fail.
+drop policy if exists "authenticated can insert submissions" on triage_submissions;
+create policy "authenticated can insert submissions"
+  on triage_submissions for insert
+  to authenticated
+  with check (true);
+
 -- Only authenticated health workers can read or triage the queue.
+drop policy if exists "authenticated can read submissions" on triage_submissions;
 create policy "authenticated can read submissions"
   on triage_submissions for select
   to authenticated
   using (true);
 
+drop policy if exists "authenticated can update submissions" on triage_submissions;
 create policy "authenticated can update submissions"
   on triage_submissions for update
   to authenticated
@@ -32,4 +45,12 @@ create policy "authenticated can update submissions"
   with check (true);
 
 -- Enable Realtime for the dashboard's live queue.
-alter publication supabase_realtime add table triage_submissions;
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and tablename = 'triage_submissions'
+  ) then
+    alter publication supabase_realtime add table triage_submissions;
+  end if;
+end $$;
