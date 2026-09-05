@@ -1,6 +1,3 @@
--- Full clinical intake fields: address, complaint history, vitals, a
--- GCS-or-AVPU consciousness check, an airway/breathing/circulation primary
--- survey, bleeding/trauma, and background history. Safe to re-run.
 alter table triage_submissions add column if not exists address text;
 alter table triage_submissions add column if not exists complaint_history text;
 
