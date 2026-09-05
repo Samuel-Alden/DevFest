@@ -35,6 +35,8 @@ function matchesQuery(row, query) {
   return (
     row.patient_name?.toLowerCase().includes(q) ||
     row.notes?.toLowerCase().includes(q) ||
+    row.address?.toLowerCase().includes(q) ||
+    row.complaint_history?.toLowerCase().includes(q) ||
     symptomText.includes(q)
   )
 }

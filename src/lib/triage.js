@@ -24,6 +24,47 @@ export function computeSeverity(selectedSymptomKeys) {
   return worst
 }
 
+// Separate from computeSeverity() so the symptom checklist's worst-tag-wins
+// logic stays untouched -- this only ever pushes severity UP to red on top
+// of whatever the symptoms already computed, it never lowers it. Every field
+// here is optional (a field worker without a BP cuff just leaves it blank),
+// so null/undefined never trigger anything -- only an explicit out-of-range
+// number or an explicit 'compromised'/non-alert selection does. Thresholds
+// are deliberately coarse (a single red/no-escalation line, not a 3-tier
+// scale) to keep the mental model simple, same spirit as the symptom list's
+// worst-wins rule.
+export function assessmentEscalatesSeverity(assessment = {}) {
+  const {
+    consciousnessScale,
+    gcsScore,
+    avpuLevel,
+    airwayStatus,
+    breathingStatus,
+    circulationStatus,
+    bleedingTrauma,
+    oxygenSaturation,
+    respiratoryRate,
+    pulseRate,
+    bodyTemperature,
+    systolicBp,
+  } = assessment
+
+  if (consciousnessScale === 'avpu' && avpuLevel != null && avpuLevel !== 'alert') return true
+  if (consciousnessScale === 'gcs' && gcsScore != null && gcsScore < 15) return true
+  if (airwayStatus === 'compromised' || breathingStatus === 'compromised' || circulationStatus === 'compromised') return true
+  if (bleedingTrauma === true) return true
+  if (oxygenSaturation != null && oxygenSaturation < 90) return true
+  if (respiratoryRate != null && (respiratoryRate < 10 || respiratoryRate > 30)) return true
+  if (pulseRate != null && (pulseRate < 40 || pulseRate > 130)) return true
+  // Deliberately higher than the highFever symptom checkbox's 39°C, so an
+  // objectively measured hyperpyrexia reads as red while the patient-reported
+  // "high fever" checkbox alone still reads as yellow.
+  if (bodyTemperature != null && (bodyTemperature >= 39.5 || bodyTemperature <= 35)) return true
+  if (systolicBp != null && (systolicBp < 90 || systolicBp > 180)) return true
+
+  return false
+}
+
 export const SEVERITY_HEX = { red: '#b3382c', yellow: '#b8791e', green: '#3d7247' }
 
 export const SEVERITY_META = {
