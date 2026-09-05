@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   SYMPTOM_OPTIONS,
@@ -104,15 +104,26 @@ function TextField({
 }
 
 function TextAreaField({ label, value, onChange, placeholder, rows = 2 }) {
+  const ref = useRef(null)
+
+  // Grow/shrink with content so the user never needs the manual resize handle.
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    el.style.height = "auto"
+    el.style.height = `${el.scrollHeight}px`
+  }, [value])
+
   return (
     <label className="block">
-      <span className="text-sm font-medium text-ink">{label}</span>
+      {label && <span className="text-sm font-medium text-ink">{label}</span>}
       <textarea
+        ref={ref}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         rows={rows}
-        className={inputClasses}
+        className={`${inputClasses} resize-none overflow-hidden`}
       />
     </label>
   );

@@ -141,7 +141,9 @@ const STRINGS = {
     location_timeout: 'Location not attached — the lookup took too long. A weak Wi-Fi/network signal can cause this; it may work on retry.',
 
     alert_me_for: 'Alert me for:',
-    alert_me_for_on: '🔔 Alert me for:',
+    alert_me_for_on: 'Alert me for:',
+    alerts_on: 'On',
+    enabling_alerts: 'Enabling…',
     notifications_blocked: 'Notifications blocked in browser settings',
     enable_alerts: 'Enable alerts',
 
@@ -302,7 +304,9 @@ const STRINGS = {
     location_timeout: 'Lokasi tidak terlampir — proses pencarian terlalu lama. Sinyal Wi-Fi/jaringan yang lemah bisa menyebabkan ini; coba lagi.',
 
     alert_me_for: 'Ingatkan saya untuk:',
-    alert_me_for_on: '🔔 Ingatkan saya untuk:',
+    alert_me_for_on: 'Ingatkan saya untuk:',
+    alerts_on: 'Aktif',
+    enabling_alerts: 'Mengaktifkan…',
     notifications_blocked: 'Notifikasi diblokir di pengaturan browser',
     enable_alerts: 'Aktifkan notifikasi',
 

@@ -182,7 +182,10 @@ export function DashboardPage() {
             <button
               onClick={() => setShowAlertMenu((v) => !v)}
               aria-label={t("notification_settings")}
-              className="p-2 rounded-lg transition-colors hover:bg-white/10"
+              aria-expanded={showAlertMenu}
+              className={`p-2 rounded-lg transition-colors hover:bg-white/10 ${
+                showAlertMenu ? "bg-white/15" : ""
+              }`}
             >
               <BellIcon className="h-5 w-5 text-white" />
             </button>
@@ -191,8 +194,13 @@ export function DashboardPage() {
                 <div
                   className="fixed inset-0 z-10"
                   onClick={() => setShowAlertMenu(false)}
+                  aria-hidden="true"
                 />
-                <div className="absolute right-0 mt-2 w-64 rounded-lg border border-line bg-paper shadow-lg p-3 z-20 animate-fade-in">
+                <div
+                  role="dialog"
+                  aria-label={t("notification_settings")}
+                  className="absolute right-0 mt-2 w-72 rounded-xl border border-line bg-paper shadow-xl p-4 z-20 animate-fade-in"
+                >
                   <PushAlertToggle />
                 </div>
               </>

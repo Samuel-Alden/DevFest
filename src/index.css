@@ -68,3 +68,10 @@ body {
   background: var(--color-paper);
   color: var(--color-ink);
 }
+
+
+/* Textareas grow with content; hide the manual resize grip. */
+textarea {
+  resize: none;
+  field-sizing: content;
+}
