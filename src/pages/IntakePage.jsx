@@ -5,7 +5,7 @@ import { submitIntake } from '../lib/queue'
 import { getDeviceId } from '../lib/deviceId'
 import { getCurrentPosition } from '../lib/geolocation'
 import { useTranslation, pick } from '../lib/i18n'
-import { LanguageToggle } from '../components/LanguageToggle'
+import { SettingsComponent } from '../components/settingsComponent'
 
 const emptyForm = { patientName: '', age: '', notes: '', symptoms: [] }
 
@@ -71,7 +71,7 @@ export function IntakePage({ onSubmitted }) {
           <h1 className="text-2xl font-bold text-ink">{t('intake_title')}</h1>
           <p className="text-sm text-ink-soft mt-1">{t('intake_subtitle')}</p>
         </div>
-        <LanguageToggle />
+        <SettingsComponent />
       </header>
 
       {lastResult && (

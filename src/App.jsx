@@ -8,7 +8,6 @@ import { useOnlineSync } from './hooks/useOnlineSync'
 import { LanguageProvider } from './lib/i18n'
 import { ThemeProvider } from './lib/theme'
 import { SettingsPage } from './pages/SettingsPage'
-import { AnalyticsPage } from './pages/AnalyticsPage'
 
 function App() {
   const { isOnline, pendingCount, isSyncing, refreshPendingCount } = useOnlineSync()
@@ -23,7 +22,6 @@ function App() {
             <Route path="/intake" element={<IntakePage onSubmitted={refreshPendingCount} />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Routes>
         </BrowserRouter>
