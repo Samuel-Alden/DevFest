@@ -13,8 +13,8 @@ export function CaseListItem({ row, selected, onSelect }) {
     <li>
       <button
         onClick={() => onSelect(row.id)}
-        className={`w-full text-left rounded-xl border-2 p-3 flex gap-3 transition-colors ${meta.border} ${
-          selected ? 'bg-neutral-100' : 'bg-white hover:bg-neutral-50'
+        className={`w-full text-left rounded-lg border-2 p-3 flex gap-3 transition-colors ${meta.border} ${
+          selected ? meta.soft : 'bg-paper hover:bg-paper-dim'
         }`}
       >
         <span
@@ -24,12 +24,12 @@ export function CaseListItem({ row, selected, onSelect }) {
         </span>
         <span className="min-w-0 flex-1">
           <span className="flex items-baseline justify-between gap-2">
-            <span className="font-semibold text-neutral-900 truncate">
+            <span className="font-semibold text-ink truncate">
               {row.patient_name || 'Unnamed patient'} {row.age ? `(${row.age})` : ''}
             </span>
           </span>
-          <span className="block text-xs text-neutral-500 truncate">{symptomSummary(row.symptoms)}</span>
-          {row.notes && <span className="block text-xs text-neutral-400 italic truncate">"{row.notes}"</span>}
+          <span className="block text-xs text-ink-soft truncate">{symptomSummary(row.symptoms)}</span>
+          {row.notes && <span className="block text-xs text-ink-soft/80 italic truncate">"{row.notes}"</span>}
         </span>
       </button>
     </li>

@@ -61,23 +61,23 @@ export function PushAlertToggle() {
   if (state === 'unsupported' || state === 'checking') return null
 
   if (state === 'denied') {
-    return <span className="text-xs text-neutral-400">Notifications blocked in browser settings</span>
+    return <span className="text-xs text-ink-soft">Notifications blocked in browser settings</span>
   }
 
   return (
     <div className="text-right">
-      <p className="text-xs font-medium text-neutral-600 mb-1">
+      <p className="text-xs font-medium text-ink mb-1">
         {state === 'subscribed' ? '🔔 Alert me for:' : 'Alert me for:'}
       </p>
       <div className="flex gap-2 justify-end mb-1.5">
         {SEVERITIES.map((key) => (
-          <label key={key} className="flex items-center gap-1 text-xs text-neutral-600 cursor-pointer">
+          <label key={key} className="flex items-center gap-1 text-xs text-ink-soft cursor-pointer">
             <input
               type="checkbox"
               checked={selected.includes(key)}
               onChange={() => toggleSeverity(key)}
               disabled={saving}
-              className="h-3.5 w-3.5"
+              className="h-3.5 w-3.5 accent-brand"
             />
             {SEVERITY_META[key].label}
           </label>
@@ -87,12 +87,12 @@ export function PushAlertToggle() {
         <button
           onClick={handleEnable}
           disabled={selected.length === 0}
-          className="text-xs px-3 py-1.5 rounded-md border border-red-300 text-red-700 hover:bg-red-50 disabled:opacity-50"
+          className="text-xs px-3 py-1.5 rounded-lg border border-brand text-brand transition-colors hover:bg-brand-soft disabled:opacity-50"
         >
           Enable alerts
         </button>
       )}
-      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+      {error && <p className="text-xs text-tag-red mt-1">{error}</p>}
     </div>
   )
 }

@@ -3,8 +3,8 @@ export function OfflineBanner({ isOnline, pendingCount, isSyncing }) {
 
   return (
     <div
-      className={`w-full text-center text-sm font-medium py-2 px-4 ${
-        isOnline ? 'bg-blue-600 text-white' : 'bg-neutral-800 text-white'
+      className={`w-full text-center text-sm font-medium py-2 px-4 animate-fade-in ${
+        isOnline ? 'bg-brand text-white' : 'bg-ink text-white'
       }`}
     >
       {!isOnline && "You're offline — submissions are being saved on this device."}

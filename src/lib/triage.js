@@ -25,7 +25,25 @@ export function computeSeverity(selectedSymptomKeys) {
 }
 
 export const SEVERITY_META = {
-  red: { label: 'Emergency', order: 0, badge: 'bg-red-600 text-white', border: 'border-red-500' },
-  yellow: { label: 'Urgent', order: 1, badge: 'bg-yellow-500 text-black', border: 'border-yellow-500' },
-  green: { label: 'Routine', order: 2, badge: 'bg-green-600 text-white', border: 'border-green-500' },
+  red: {
+    label: 'Emergency',
+    order: 0,
+    badge: 'bg-tag-red text-white',
+    border: 'border-tag-red',
+    soft: 'bg-tag-red-soft',
+  },
+  yellow: {
+    label: 'Urgent',
+    order: 1,
+    badge: 'bg-tag-amber text-white',
+    border: 'border-tag-amber',
+    soft: 'bg-tag-amber-soft',
+  },
+  green: {
+    label: 'Routine',
+    order: 2,
+    badge: 'bg-tag-green text-white',
+    border: 'border-tag-green',
+    soft: 'bg-tag-green-soft',
+  },
 }

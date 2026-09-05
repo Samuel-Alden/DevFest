@@ -6,6 +6,14 @@ import { getDeviceId } from '../lib/deviceId'
 
 const emptyForm = { patientName: '', age: '', notes: '', symptoms: [] }
 
+const SYMPTOM_GROUPS = [
+  { severity: 'red', heading: 'Emergency signs', options: SYMPTOM_OPTIONS.filter((o) => o.severity === 'red') },
+  { severity: 'yellow', heading: 'Other symptoms to note', options: SYMPTOM_OPTIONS.filter((o) => o.severity === 'yellow') },
+]
+
+const inputClasses =
+  'mt-1 w-full rounded-lg border border-line px-3 py-2 outline-none focus:border-brand focus:ring-2 focus:ring-brand-soft'
+
 export function IntakePage({ onSubmitted }) {
   const [form, setForm] = useState(emptyForm)
   const [lastResult, setLastResult] = useState(null)
@@ -44,25 +52,23 @@ export function IntakePage({ onSubmitted }) {
   return (
     <div className="max-w-lg mx-auto p-4 pb-24">
       <header className="mb-6">
-        <h1 className="text-2xl font-bold text-neutral-900">Symptom Intake</h1>
-        <p className="text-sm text-neutral-500 mt-1">
+        <h1 className="text-2xl font-bold text-ink">Symptom Intake</h1>
+        <p className="text-sm text-ink-soft mt-1">
           Works offline. Submissions sync automatically once you're back online.
         </p>
       </header>
 
       {lastResult && (
         <div
-          className={`mb-6 rounded-lg p-4 border ${
-            lastResult.synced ? 'bg-green-50 border-green-200' : 'bg-neutral-50 border-neutral-200'
-          }`}
+          className={`mb-6 rounded-lg p-4 border-l-4 animate-fade-in ${SEVERITY_META[lastResult.severity].border} ${SEVERITY_META[lastResult.severity].soft}`}
         >
-          <p className="font-medium">
+          <p className="font-medium text-ink">
             Saved.{' '}
             <span className={`inline-block px-2 py-0.5 rounded text-xs font-semibold ${SEVERITY_META[lastResult.severity].badge}`}>
               {SEVERITY_META[lastResult.severity].label}
             </span>
           </p>
-          <p className="text-sm text-neutral-500 mt-1">
+          <p className="text-sm text-ink-soft mt-1">
             {lastResult.synced ? 'Sent to the clinic immediately.' : 'Saved on this device — will sync when online.'}
           </p>
         </div>
@@ -71,54 +77,58 @@ export function IntakePage({ onSubmitted }) {
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="grid grid-cols-3 gap-3">
           <label className="col-span-2 block">
-            <span className="text-sm font-medium text-neutral-700">Patient name</span>
+            <span className="text-sm font-medium text-ink">Patient name</span>
             <input
               type="text"
               value={form.patientName}
               onChange={(e) => setForm((f) => ({ ...f, patientName: e.target.value }))}
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+              className={inputClasses}
               placeholder="Optional"
             />
           </label>
           <label className="block">
-            <span className="text-sm font-medium text-neutral-700">Age</span>
+            <span className="text-sm font-medium text-ink">Age</span>
             <input
               type="number"
               min="0"
               value={form.age}
               onChange={(e) => setForm((f) => ({ ...f, age: e.target.value }))}
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+              className={inputClasses}
             />
           </label>
         </div>
 
-        <fieldset>
-          <legend className="text-sm font-medium text-neutral-700 mb-2">Symptoms (select all that apply)</legend>
-          <div className="space-y-2">
-            {SYMPTOM_OPTIONS.map((opt) => (
-              <label
-                key={opt.key}
-                className="flex items-center gap-3 rounded-md border border-neutral-200 px-3 py-2 cursor-pointer hover:bg-neutral-50"
-              >
-                <input
-                  type="checkbox"
-                  checked={form.symptoms.includes(opt.key)}
-                  onChange={() => toggleSymptom(opt.key)}
-                  className="h-4 w-4"
-                />
-                <span className="flex-1 text-sm">{opt.label}</span>
-                <span className={`h-2 w-2 rounded-full ${opt.severity === 'red' ? 'bg-red-500' : 'bg-yellow-500'}`} />
-              </label>
-            ))}
-          </div>
+        <fieldset className="space-y-4">
+          <legend className="text-sm font-medium text-ink mb-1">Symptoms (select all that apply)</legend>
+          {SYMPTOM_GROUPS.map((group) => (
+            <div key={group.severity} className={`rounded-lg border-l-4 pl-3 ${SEVERITY_META[group.severity].border}`}>
+              <p className="text-xs font-semibold text-ink-soft mb-2">{group.heading}</p>
+              <div className="space-y-2">
+                {group.options.map((opt) => (
+                  <label
+                    key={opt.key}
+                    className="flex items-center gap-3 rounded-lg border border-line px-3 py-2 cursor-pointer hover:bg-paper-dim"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={form.symptoms.includes(opt.key)}
+                      onChange={() => toggleSymptom(opt.key)}
+                      className="h-4 w-4 accent-brand"
+                    />
+                    <span className="flex-1 text-sm text-ink">{opt.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          ))}
         </fieldset>
 
         <label className="block">
-          <span className="text-sm font-medium text-neutral-700">Notes</span>
+          <span className="text-sm font-medium text-ink">Notes</span>
           <textarea
             value={form.notes}
             onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
-            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+            className={inputClasses}
             rows={3}
             placeholder="Anything else the clinic should know"
           />
@@ -127,14 +137,14 @@ export function IntakePage({ onSubmitted }) {
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-md bg-red-600 text-white font-semibold py-3 disabled:opacity-50"
+          className="w-full rounded-lg bg-brand text-white font-semibold py-3 transition-colors hover:bg-brand-deep disabled:opacity-50"
         >
           {submitting ? 'Saving…' : 'Submit'}
         </button>
       </form>
 
       <div className="mt-8 text-center">
-        <Link to="/login" className="text-sm text-neutral-400 underline">
+        <Link to="/login" className="text-sm text-ink-soft underline">
           Health worker login
         </Link>
       </div>

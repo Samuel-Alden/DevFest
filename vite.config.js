@@ -18,8 +18,8 @@ export default defineConfig({
         name: 'TriagePeace',
         short_name: 'TriagePeace',
         description: 'Offline-first symptom intake and clinic triage queue',
-        theme_color: '#dc2626',
-        background_color: '#ffffff',
+        theme_color: '#24505c',
+        background_color: '#faf8f4',
         display: 'standalone',
         start_url: '/intake',
         icons: [
@@ -29,7 +29,7 @@ export default defineConfig({
         ],
       },
       injectManifest: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
       },
       devOptions: {
         enabled: true,

@@ -98,24 +98,24 @@ export function DashboardPage() {
 
   return (
     <div className="h-dvh flex flex-col">
-      <header className="flex items-center justify-between px-4 py-3 border-b border-neutral-200 shrink-0">
+      <header className="flex items-center justify-between px-4 py-3 bg-brand-deep shrink-0">
         <div>
-          <h1 className="text-lg font-bold text-neutral-900">TriagePeace</h1>
-          <p className="text-xs text-neutral-500">{sortedRows.length} active case(s)</p>
+          <h1 className="text-lg font-bold text-white">TriagePeace</h1>
+          <p className="text-xs text-white/70">{sortedRows.length} active case(s)</p>
         </div>
         <div className="flex items-center gap-1">
           <div className="relative">
             <button
               onClick={() => setShowAlertMenu((v) => !v)}
               aria-label="Notification settings"
-              className="p-2 rounded-md hover:bg-neutral-100"
+              className="p-2 rounded-lg transition-colors hover:bg-white/10"
             >
-              <BellIcon className="h-5 w-5 text-neutral-600" />
+              <BellIcon className="h-5 w-5 text-white" />
             </button>
             {showAlertMenu && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setShowAlertMenu(false)} />
-                <div className="absolute right-0 mt-2 w-64 rounded-md border border-neutral-200 bg-white shadow-lg p-3 z-20">
+                <div className="absolute right-0 mt-2 w-64 rounded-lg border border-line bg-paper shadow-lg p-3 z-20 animate-fade-in">
                   <PushAlertToggle />
                 </div>
               </>
@@ -124,7 +124,7 @@ export function DashboardPage() {
           <button
             onClick={() => supabase.auth.signOut()}
             aria-label="Sign out"
-            className="p-2 rounded-md hover:bg-neutral-100 text-neutral-500"
+            className="p-2 rounded-lg transition-colors hover:bg-white/10 text-white"
           >
             <LogoutIcon className="h-5 w-5" />
           </button>
@@ -139,7 +139,7 @@ export function DashboardPage() {
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           loading={loadingRows}
-          className={`${selectedId ? 'hidden' : 'flex'} md:flex w-full md:border-r md:border-neutral-200`}
+          className={`${selectedId ? 'hidden' : 'flex'} md:flex w-full md:border-r md:border-line`}
         />
         <CaseDetailPane
           row={selectedRow}

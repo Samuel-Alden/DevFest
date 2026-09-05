@@ -1,9 +1,51 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --animate-fade-in: fade-in 0.18s ease-out;
+
+  /* Warm, paper-toned neutrals -- a clinical chart, not a cold tech-blue app. */
+  --color-paper: #faf8f4;
+  --color-paper-dim: #f1ede4;
+  --color-ink: #201f1c;
+  --color-ink-soft: #6b6963;
+  --color-line: #e3dfd6;
+
+  /* Brand: a deep, muted petrol blue (oxygen-tank / scrubs blue) -- deliberately
+     not the generic bright teal most health apps default to. */
+  --color-brand: #24505c;
+  --color-brand-deep: #163038;
+  --color-brand-soft: #e4edee;
+
+  /* Severity: deepened toward printed triage-tag ink rather than web-alert
+     brights, so they read as a real clinical signal, not a UI accent color.
+     Each has a soft tint for tag/selection backgrounds. */
+  --color-tag-red: #b3382c;
+  --color-tag-red-soft: #f5e4e1;
+  --color-tag-amber: #b8791e;
+  --color-tag-amber-soft: #f5ebd8;
+  --color-tag-green: #3d7247;
+  --color-tag-green-soft: #e4efe5;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 }
 
 body {
   margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-paper);
+  color: var(--color-ink);
 }
