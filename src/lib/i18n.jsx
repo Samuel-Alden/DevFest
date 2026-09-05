@@ -38,6 +38,77 @@ const STRINGS = {
     landing_footer: 'Offline-first triage prototype for healthcare teams.',
     start_intake: 'Submit a case',
 
+    lp_login_short: 'Log in',
+    lp_hero_eyebrow: 'Built for care beyond the network',
+    lp_hero_title: 'When the internet stops, care should not.',
+    lp_hero_subtitle:
+      'TriagePeace helps field healthcare workers capture patient information offline, triage cases, and sync securely when connectivity returns.',
+    lp_hero_note: 'No account and no signal needed to start an intake.',
+    lp_hero_preview_label:
+      'A case captured offline, saved on the device, then synced to the clinic queue once the connection returned.',
+    lp_preview_caption: 'How a case moves',
+    lp_preview_status_offline: 'Offline',
+    lp_preview_case: 'Case A-24',
+    lp_preview_patient: 'Adult, 34',
+    lp_preview_reported: 'Reported',
+    lp_preview_symptom_1: 'Chest pain',
+    lp_preview_symptom_2: 'Shortness of breath',
+    lp_preview_status_synced: 'Synced',
+    lp_preview_step_captured: 'Captured on device',
+    lp_preview_step_queued: 'Held offline on device',
+    lp_preview_step_synced: 'Synced to the clinic queue',
+    lp_preview_time_captured: '14:02',
+    lp_preview_time_synced: '14:47',
+    lp_preview_queue: 'Clinic queue',
+    lp_preview_queue_item: 'New case received',
+
+    lp_value_eyebrow: 'The idea',
+    lp_value_heading: 'Simple when every second matters.',
+    lp_value_subtitle:
+      'TriagePeace is designed around the field worker, not the technology. Every screen assumes a weak signal, a hurried moment, and a phone held in one hand.',
+    lp_feature_offline_title: 'Works offline',
+    lp_feature_offline_body: 'Patient information can be captured even without an internet connection.',
+    lp_feature_triage_title: 'Structured triage',
+    lp_feature_triage_body:
+      'The intake workflow helps organize important symptoms and clinical information by urgency.',
+    lp_feature_sync_title: 'Syncs when connected',
+    lp_feature_sync_body: 'Queued submissions synchronize automatically when connectivity returns.',
+
+    lp_workflow_eyebrow: 'How it works',
+    lp_workflow_heading: 'From the first question to a clinic that can act.',
+    lp_workflow_subtitle:
+      'Five steps carry a case from the field to the triage queue. The connection can drop at any point without losing the work.',
+    lp_step_capture_title: 'Capture',
+    lp_step_capture_body: "Record the patient's information.",
+    lp_step_triage_title: 'Triage',
+    lp_step_triage_body: 'Identify the urgency of the case.',
+    lp_step_save_title: 'Save',
+    lp_step_save_body: 'If offline, the submission is safely kept on the device.',
+    lp_step_sync_title: 'Sync',
+    lp_step_sync_body: 'When connectivity returns, the case is synchronized.',
+    lp_step_respond_title: 'Respond',
+    lp_step_respond_body: 'The clinic can see and handle the case.',
+
+    lp_offline_eyebrow: 'Offline-first',
+    lp_offline_heading: 'Healthcare should not depend on a signal bar.',
+    lp_offline_body:
+      'The connection can drop at any point in a visit. TriagePeace keeps the intake moving and closes the loop the moment a signal returns — no lost forms, no re-entry, no waiting for a good connection to help someone.',
+    lp_flow_offline: 'Offline',
+    lp_flow_submitted: 'Patient form submitted',
+    lp_flow_saved: 'Saved locally',
+    lp_flow_returns: 'Connection returns',
+    lp_flow_synced: 'Automatically synchronized',
+    lp_flow_label:
+      'While offline, a submitted patient form is saved locally; when the connection returns it is synchronized automatically.',
+
+    lp_trust_eyebrow: 'Responsibility',
+    lp_trust_heading: 'A workflow tool, with clinicians in charge.',
+    lp_trust_body:
+      'TriagePeace helps organize patient information and prioritize cases. Clinical decisions remain with qualified healthcare professionals. It is a decision-support and workflow prototype — not a diagnostic device, and not a substitute for in-person assessment.',
+
+    lp_final_heading: 'Keep patient information moving.',
+    lp_final_body: 'Start an intake without waiting for a stable connection.',
+
     intake_title: 'Symptom Intake',
     intake_subtitle: "Works offline. Submissions sync automatically once you're back online.",
     saved: 'Saved.',
@@ -200,6 +271,77 @@ const STRINGS = {
     landing_cta_body: 'Mulai formulir tanpa menunggu koneksi stabil. TriagePeace dirancang untuk kondisi nyata layanan kesehatan lapangan.',
     landing_footer: 'Prototipe triase offline-first untuk tim kesehatan.',
     start_intake: 'Isi formulir kasus',
+
+    lp_login_short: 'Masuk',
+    lp_hero_eyebrow: 'Dibuat untuk layanan di luar jangkauan jaringan',
+    lp_hero_title: 'Saat internet berhenti, layanan tidak boleh berhenti.',
+    lp_hero_subtitle:
+      'TriagePeace membantu petugas kesehatan lapangan mencatat data pasien secara offline, memilah kasus berdasarkan urgensi, dan menyinkronkannya dengan aman saat koneksi kembali.',
+    lp_hero_note: 'Tanpa akun dan tanpa sinyal untuk mulai mencatat kasus.',
+    lp_hero_preview_label:
+      'Sebuah kasus dicatat saat offline, disimpan di perangkat, lalu tersinkron ke antrean klinik begitu koneksi kembali.',
+    lp_preview_caption: 'Perjalanan sebuah kasus',
+    lp_preview_status_offline: 'Offline',
+    lp_preview_case: 'Kasus A-24',
+    lp_preview_patient: 'Dewasa, 34',
+    lp_preview_reported: 'Dilaporkan',
+    lp_preview_symptom_1: 'Nyeri dada',
+    lp_preview_symptom_2: 'Sesak napas',
+    lp_preview_status_synced: 'Tersinkron',
+    lp_preview_step_captured: 'Dicatat di perangkat',
+    lp_preview_step_queued: 'Ditahan offline di perangkat',
+    lp_preview_step_synced: 'Tersinkron ke antrean klinik',
+    lp_preview_time_captured: '14.02',
+    lp_preview_time_synced: '14.47',
+    lp_preview_queue: 'Antrean klinik',
+    lp_preview_queue_item: 'Kasus baru diterima',
+
+    lp_value_eyebrow: 'Gagasannya',
+    lp_value_heading: 'Sederhana saat setiap detik menentukan.',
+    lp_value_subtitle:
+      'TriagePeace dirancang mengikuti petugas lapangan, bukan teknologinya. Setiap layar mengasumsikan sinyal lemah, waktu yang mepet, dan ponsel yang dipegang satu tangan.',
+    lp_feature_offline_title: 'Berfungsi tanpa internet',
+    lp_feature_offline_body: 'Data pasien tetap bisa dicatat walau tidak ada koneksi internet.',
+    lp_feature_triage_title: 'Triase terstruktur',
+    lp_feature_triage_body:
+      'Alur pencatatan membantu menata gejala penting dan informasi klinis berdasarkan tingkat urgensi.',
+    lp_feature_sync_title: 'Sinkron saat terhubung',
+    lp_feature_sync_body: 'Data yang mengantre tersinkron otomatis begitu koneksi kembali.',
+
+    lp_workflow_eyebrow: 'Cara kerjanya',
+    lp_workflow_heading: 'Dari pertanyaan pertama hingga klinik yang siap bertindak.',
+    lp_workflow_subtitle:
+      'Lima langkah membawa sebuah kasus dari lapangan ke antrean triase. Koneksi boleh terputus kapan saja tanpa kehilangan pekerjaan.',
+    lp_step_capture_title: 'Catat',
+    lp_step_capture_body: 'Rekam data pasien.',
+    lp_step_triage_title: 'Pilah',
+    lp_step_triage_body: 'Kenali tingkat urgensi kasus.',
+    lp_step_save_title: 'Simpan',
+    lp_step_save_body: 'Jika offline, data disimpan dengan aman di perangkat.',
+    lp_step_sync_title: 'Sinkron',
+    lp_step_sync_body: 'Saat koneksi kembali, kasus disinkronkan.',
+    lp_step_respond_title: 'Tanggapi',
+    lp_step_respond_body: 'Klinik dapat melihat dan menangani kasus.',
+
+    lp_offline_eyebrow: 'Mengutamakan mode offline',
+    lp_offline_heading: 'Layanan kesehatan tak seharusnya bergantung pada indikator sinyal.',
+    lp_offline_body:
+      'Koneksi bisa terputus kapan saja saat kunjungan. TriagePeace menjaga proses pencatatan tetap berjalan dan menuntaskannya begitu sinyal kembali — tanpa formulir hilang, tanpa input ulang, tanpa menunggu koneksi bagus untuk menolong seseorang.',
+    lp_flow_offline: 'Offline',
+    lp_flow_submitted: 'Formulir pasien dikirim',
+    lp_flow_saved: 'Tersimpan di perangkat',
+    lp_flow_returns: 'Koneksi kembali',
+    lp_flow_synced: 'Tersinkron otomatis',
+    lp_flow_label:
+      'Saat offline, formulir pasien yang dikirim disimpan di perangkat; ketika koneksi kembali, data tersinkron otomatis.',
+
+    lp_trust_eyebrow: 'Tanggung jawab',
+    lp_trust_heading: 'Alat bantu alur kerja, dengan tenaga klinis sebagai penentu.',
+    lp_trust_body:
+      'TriagePeace membantu menata data pasien dan memprioritaskan kasus. Keputusan klinis tetap berada di tangan tenaga kesehatan yang berkompeten. Ini adalah prototipe pendukung keputusan dan alur kerja — bukan alat diagnostik, dan bukan pengganti pemeriksaan langsung.',
+
+    lp_final_heading: 'Jaga data pasien tetap mengalir.',
+    lp_final_body: 'Mulai pencatatan tanpa menunggu koneksi stabil.',
 
     intake_title: 'Formulir Gejala',
     intake_subtitle: 'Berfungsi tanpa internet. Data akan tersinkron otomatis saat kembali online.',

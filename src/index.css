@@ -37,6 +37,7 @@
       transform: translateY(0);
     }
   }
+
 }
 
 :root {
@@ -69,9 +70,21 @@ body {
   color: var(--color-ink);
 }
 
-
 /* Textareas grow with content; hide the manual resize grip. */
 textarea {
   resize: none;
   field-sizing: content;
+}
+
+/* Honor the OS "reduce motion" setting everywhere -- entrance animations and
+   hover transitions collapse to a near-instant state change. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0 !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
