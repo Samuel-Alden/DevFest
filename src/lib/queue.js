@@ -1,7 +1,7 @@
 import { openDB } from 'idb'
 import { supabase } from './supabase'
 
-const DB_NAME = 'triagelink'
+const DB_NAME = 'triagepeace'
 const STORE_NAME = 'pending_submissions'
 
 async function getDb() {

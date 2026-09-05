@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'triagelink-device-id'
+const STORAGE_KEY = 'triagepeace-device-id'
 
 export function getDeviceId() {
   let id = localStorage.getItem(STORAGE_KEY)

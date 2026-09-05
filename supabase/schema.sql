@@ -1,4 +1,4 @@
--- TriageLink schema
+-- TriagePeace schema
 create table if not exists triage_submissions (
   id uuid primary key default gen_random_uuid(),
   device_id text not null,
