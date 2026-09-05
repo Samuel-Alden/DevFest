@@ -9,7 +9,6 @@ import { CaseDetailPane } from "../components/dashboard/CaseDetailPane";
 import { StatsRow } from "../components/dashboard/StatsRow";
 import { BellIcon, ChartIcon } from "../components/icons";
 import { useTranslation } from "../lib/i18n";
-import { SettingsComponent } from "../components/SettingsComponent";
 
 function sortActive(rows) {
   return [...rows].sort((a, b) => {
