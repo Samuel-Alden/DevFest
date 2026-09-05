@@ -50,6 +50,10 @@ const STRINGS = {
     unnamed_patient: 'Unnamed patient',
     no_symptoms_recorded: 'No symptoms recorded',
 
+    location_captured: '📍 Location attached.',
+    location_denied: 'Location not attached — this browser/device blocked the location request. Enable location for this site to include it next time.',
+    location_unavailable: 'Location not attached — no fix could be obtained.',
+
     alert_me_for: 'Alert me for:',
     alert_me_for_on: '🔔 Alert me for:',
     notifications_blocked: 'Notifications blocked in browser settings',
@@ -108,6 +112,10 @@ const STRINGS = {
     back_to_queue: 'Kembali ke antrean',
     unnamed_patient: 'Pasien tanpa nama',
     no_symptoms_recorded: 'Tidak ada gejala tercatat',
+
+    location_captured: '📍 Lokasi terlampir.',
+    location_denied: 'Lokasi tidak terlampir — browser/perangkat ini memblokir permintaan lokasi. Aktifkan izin lokasi untuk situs ini agar tersertakan lain kali.',
+    location_unavailable: 'Lokasi tidak terlampir — tidak dapat menentukan posisi.',
 
     alert_me_for: 'Ingatkan saya untuk:',
     alert_me_for_on: '🔔 Ingatkan saya untuk:',

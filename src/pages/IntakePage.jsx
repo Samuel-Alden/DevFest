@@ -42,13 +42,13 @@ export function IntakePage({ onSubmitted }) {
       symptoms: form.symptoms,
       notes: form.notes || null,
       severity,
-      latitude: position?.latitude ?? null,
-      longitude: position?.longitude ?? null,
+      latitude: position.latitude,
+      longitude: position.longitude,
     }
 
     try {
       const { synced } = await submitIntake(payload)
-      setLastResult({ severity, synced })
+      setLastResult({ severity, synced, locationError: position.error })
       setForm(emptyForm)
       onSubmitted?.()
     } finally {
@@ -78,6 +78,13 @@ export function IntakePage({ onSubmitted }) {
           </p>
           <p className="text-sm text-ink-soft mt-1">
             {lastResult.synced ? t('sent_immediately') : t('saved_offline')}
+          </p>
+          <p className="text-xs text-ink-soft mt-2">
+            {lastResult.locationError === null
+              ? t('location_captured')
+              : lastResult.locationError === 'denied'
+                ? t('location_denied')
+                : t('location_unavailable')}
           </p>
         </div>
       )}
