@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { SYMPTOM_OPTIONS, computeSeverity, SEVERITY_META } from '../lib/triage'
 import { submitIntake } from '../lib/queue'
@@ -30,6 +30,18 @@ export function IntakePage({ onSubmitted }) {
   const [form, setForm] = useState(emptyForm)
   const [lastResult, setLastResult] = useState(null)
   const [submitting, setSubmitting] = useState(false)
+
+  // Fire a geolocation request as soon as the page loads, purely to surface
+  // the browser's permission prompt as early as possible -- the timeout in
+  // getCurrentPosition() runs while that prompt is waiting on the user, so
+  // requesting it only at submit time meant the very first submission (the
+  // one where the prompt actually appears) routinely timed out just from the
+  // user reading and clicking "Allow". Every submission still fetches a
+  // fresh position (see handleSubmit) for accuracy; this call's result is
+  // discarded, it only exists to get the permission decision out of the way.
+  useEffect(() => {
+    getCurrentPosition()
+  }, [])
 
   const toggleSymptom = (key) => {
     setForm((f) => ({
