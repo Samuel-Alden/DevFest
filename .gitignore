@@ -28,3 +28,7 @@ dev-dist
 .vercel
 .env*
 supabase/.temp
+
+# Claude
+.claude
+CLAUDE.md

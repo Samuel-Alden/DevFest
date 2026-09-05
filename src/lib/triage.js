@@ -28,24 +28,24 @@ export const SEVERITY_HEX = { red: '#b3382c', yellow: '#b8791e', green: '#3d7247
 
 export const SEVERITY_META = {
   red: {
-    label: 'Emergency',
-    labelId: 'Darurat',
+    label: 'Immediate',
+    labelId: 'Kritis',
     order: 0,
     badge: 'bg-tag-red text-white',
     border: 'border-tag-red',
     soft: 'bg-tag-red-soft',
   },
   yellow: {
-    label: 'Urgent',
-    labelId: 'Mendesak',
+    label: 'Delayed',
+    labelId: 'Serius',
     order: 1,
     badge: 'bg-tag-amber text-white',
     border: 'border-tag-amber',
     soft: 'bg-tag-amber-soft',
   },
   green: {
-    label: 'Routine',
-    labelId: 'Rutin',
+    label: 'Minor',
+    labelId: 'Ringan',
     order: 2,
     badge: 'bg-tag-green text-white',
     border: 'border-tag-green',
