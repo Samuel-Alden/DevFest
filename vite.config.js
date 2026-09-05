@@ -12,8 +12,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
       manifest: {
-        name: 'TriageLink',
-        short_name: 'TriageLink',
+        name: 'TriagePeace',
+        short_name: 'TriagePeace',
         description: 'Offline-first symptom intake and clinic triage queue',
         theme_color: '#dc2626',
         background_color: '#ffffff',
