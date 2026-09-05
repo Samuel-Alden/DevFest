@@ -31,7 +31,7 @@ export default defineConfig({
       injectManifest: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
       },
-      // only use when dev mode
+      // only use when dev mode 
       devOptions: {
         enabled: false,
       },
