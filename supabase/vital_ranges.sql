@@ -1,9 +1,3 @@
--- Physiologically-possible bounds (safety-margin, not clinical-danger
--- thresholds -- see VITAL_RANGES in src/lib/triage.js) for the numeric
--- vitals that clinical_assessment.sql left unconstrained, plus age. Guarded
--- with a pg_constraint existence check (Postgres has no "add constraint if
--- not exists"), same idempotent pattern as the realtime publication guard
--- in schema.sql, so this file is safe to re-run.
 do $$
 begin
   if not exists (select 1 from pg_constraint where conname = 'triage_submissions_age_check') then
