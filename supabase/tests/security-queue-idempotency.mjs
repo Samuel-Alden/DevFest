@@ -1,13 +1,3 @@
-// Offline-queue idempotency test for TriagePeace.
-//
-// The client stamps each queued submission with a client_submission_id and a
-// UNIQUE constraint backs it. A sync that stored the row but lost its
-// response is retried on the next flush; that retry must NOT create a second
-// patient record — it must come back as a unique violation (SQLSTATE 23505),
-// which src/lib/queue.js#trySubmit treats as "already stored, done".
-//
-// Run:  node supabase/tests/security-queue-idempotency.mjs
-
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
