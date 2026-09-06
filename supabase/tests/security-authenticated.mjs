@@ -1,16 +1,3 @@
-// Security / RLS regression tests for TriagePeace — authenticated boundary.
-//
-// Verifies a logged-in health worker can still run the whole dashboard
-// workflow (read queue, in_progress, resolve, reopen, delete-resolved) and
-// that the Phase 2 least-privilege changes block everything else (rewriting
-// patient data / severity / timestamps, deleting a non-resolved case).
-//
-// Needs a THROWAWAY Supabase Auth user — delete it afterwards.
-//   set SECTEST_HW_EMAIL / SECTEST_HW_PASSWORD in the environment, then:
-//   node supabase/tests/security-authenticated.mjs
-//
-// Reads VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY from the repo-root .env.
-
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
@@ -79,7 +66,6 @@ async function rest(method, path, { body, prefer, anon } = {}) {
 }
 
 async function main() {
-  // ---- sign in ----------------------------------------------------------
   {
     const res = await fetch(`${URL}/auth/v1/token?grant_type=password`, {
       method: 'POST',
@@ -90,8 +76,8 @@ async function main() {
     try {
       token = JSON.parse(text).access_token
     } catch {
-      /* leave token null */
     }
+    
     check(
       'health worker sign-in -> token',
       res.status === 200 && Boolean(token),
@@ -102,7 +88,6 @@ async function main() {
 
   console.log('\nAuthenticated workflow — still works\n')
 
-// seed a case to operate on
 await rest('POST', '/triage_submissions', {
   body: { device_id: DEVICE_ID, patient_name: 'HW Test', age: 20, symptoms: ['highFever'], severity: 'yellow', notes: `SECTEST ${RUN_ID}` },
   prefer: 'return=minimal',
@@ -153,26 +138,25 @@ console.log('\nAuthenticated least privilege — blocked\n')
   check('PATCH device_id -> rejected', status >= 400, `status ${status}`)
 }
 {
-  // mixed patch: an allowed column + a forbidden one must fail atomically
+
   const { status } = await rest('PATCH', `/triage_submissions?id=eq.${ID}`, { body: { status: 'resolved', patient_name: 'x' }, prefer: 'return=minimal' })
   row = await findMine()
   check('PATCH {status, patient_name} -> rejected, status unchanged', status >= 400 && row.status === 'pending', `status ${status}, row ${row?.status}`)
 }
 {
-  // DELETE a non-resolved case -> denied by policy (row must be resolved)
+
   const { status, json } = await rest('DELETE', `/triage_submissions?id=eq.${ID}`, { prefer: 'return=representation' })
   row = await findMine()
   check('DELETE pending case -> denied', (status >= 400 || (Array.isArray(json) && json.length === 0)) && Boolean(row), `status ${status}, still there ${Boolean(row)}`)
 }
 {
-  // resolve then DELETE -> allowed (the retained, intended path)
+
   await rest('PATCH', `/triage_submissions?id=eq.${ID}`, { body: { status: 'resolved', resolved_at: new Date().toISOString() }, prefer: 'return=minimal' })
   const { status } = await rest('DELETE', `/triage_submissions?id=eq.${ID}`, { prefer: 'return=minimal' })
   row = await findMine()
   check('DELETE resolved case -> allowed', status < 300 && !row, `status ${status}, gone ${!row}`)
 }
 
-  // best-effort cleanup of any strays from this run
   await rest('PATCH', `/triage_submissions?notes=eq.SECTEST%20${RUN_ID}`, { body: { status: 'resolved', resolved_at: new Date().toISOString() }, prefer: 'return=minimal' })
   await rest('DELETE', `/triage_submissions?notes=eq.SECTEST%20${RUN_ID}`, { prefer: 'return=minimal' })
 }
