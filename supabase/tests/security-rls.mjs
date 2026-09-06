@@ -1,21 +1,3 @@
-// Security / RLS regression tests for TriagePeace — anonymous boundary.
-//
-// Exercises the *anonymous* (publishable-key) surface against the live
-// PostgREST endpoint: the same thing a tampered field-device client would
-// hit. Mirrors how the real client writes — supabase-js `.insert(payload)`
-// with no `.select()` sends `Prefer: return=minimal`, so anon never needs
-// read-back.
-//
-// Reads VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY from the repo-root .env.
-// Run:  node supabase/tests/security-rls.mjs
-//
-// Rows created here are tagged `notes = 'SECTEST <runId>'` and use
-// device_id = SECTEST_DEVICE_ID. They cannot be removed by this script
-// (anon has no DELETE) — that is the point. Clean up with a privileged
-// connection, e.g.:
-//   npx supabase db query --linked \
-//     "delete from triage_submissions where device_id = 'sectest-device-0000'"
-
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
@@ -41,8 +23,6 @@ if (!URL || !KEY) {
 const REST = `${URL}/rest/v1`
 const RUN_ID = `${Date.now()}`
 const SECTEST_DEVICE_ID = 'sectest-device-0000'
-// A real target row id can be supplied so the UPDATE/DELETE-denial checks
-// aim at an actual case; without it they still prove "anon effects nothing".
 const TARGET_ID = process.env.SECTEST_TARGET_ID || '00000000-0000-4000-8000-0000000000ff'
 
 let pass = 0
@@ -89,15 +69,12 @@ const payload = (over = {}) => ({
   ...over,
 })
 
-// insert as the real client does: return=minimal, no read-back
 const insert = (over) => rest('POST', '/triage_submissions', { body: payload(over), prefer: 'return=minimal' })
 
 console.log('\nAnonymous access boundary\n')
 
 check('anon INSERT valid payload -> allowed (201)', (await insert()).status === 201)
 
-// The full clinical payload IntakePage builds, every section populated with
-// in-range values — proves the new constraints don't reject a real form.
 {
   const full = {
     device_id: SECTEST_DEVICE_ID,
