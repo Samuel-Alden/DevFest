@@ -1,4 +1,4 @@
-TriagePeace
+**TriagePeace**
 
 «Ketika internet berhenti, pelayanan tidak boleh ikut berhenti.»
 
@@ -11,7 +11,7 @@ Repository: https://github.com/Samuel-Alden/TriagePeace
 
 ---
 
-Masalah
+**Masalah**
 
 Tenaga kesehatan yang bekerja di desa terpencil, daerah pedalaman, hutan, wilayah bencana, dan lokasi dengan konektivitas rendah dapat menghadapi satu masalah besar:
 
@@ -33,7 +33,7 @@ Alih-alih menganggap koneksi internet sebagai sebuah keharusan, TriagePeace meng
 
 ---
 
-Solusi
+**Solusi**
 
 TriagePeace menyediakan alur kerja offline-first:
 
@@ -77,7 +77,7 @@ Tujuan utamanya sederhana:
 
 ---
 
-Fitur Utama
+**Fitur Utama**
 
 1. Formulir Pasien Offline
 
@@ -150,7 +150,7 @@ Repository juga memiliki mekanisme validasi di sisi server yang dapat menetapkan
 
 Sebagai contoh, gejala yang dikonfigurasi sebagai indikator kondisi darurat dapat memaksa kasus memiliki tingkat minimal Merah.
 
-Penting
+**Penting**
 
 TriagePeace saat ini merupakan prototype dan bukan sistem diagnosis otomatis atau pengganti keputusan tenaga medis profesional.
 
@@ -252,7 +252,7 @@ Keduanya menggunakan sistem desain yang sama sehingga pengalaman pengguna tetap 
 
 ---
 
-Arsitektur
+**Arsitektur**
 
 TriagePeace dibangun sebagai Progressive Web App (PWA) dengan arsitektur offline-first.
 
@@ -271,7 +271,7 @@ TriagePeace dibangun sebagai Progressive Web App (PWA) dengan arsitektur offline
               │       Koneksi kembali       │
               └─────────────────────────────┘
 
-Frontend
+**Frontend**
 
 Frontend dibangun menggunakan:
 
@@ -281,13 +281,13 @@ Frontend dibangun menggunakan:
 - Tailwind CSS
 - Vite
 
-Penyimpanan Lokal
+**Penyimpanan Lokal**
 
 IndexedDB digunakan untuk menyimpan antrean data secara lokal ketika perangkat sedang offline.
 
 Library "idb" digunakan untuk berinteraksi dengan IndexedDB.
 
-Backend
+**Backend**
 
 TriagePeace menggunakan Supabase untuk:
 
@@ -297,7 +297,7 @@ TriagePeace menggunakan Supabase untuk:
 - Row Level Security
 - Validasi data di sisi server
 
-PWA
+**PWA**
 
 TriagePeace menggunakan arsitektur Progressive Web App dengan service worker.
 
@@ -305,7 +305,7 @@ Hal ini mendukung konsep aplikasi yang dapat terus digunakan dalam kondisi konek
 
 ---
 
-Teknologi
+**Teknologi**
 
 Teknologi| Fungsi
 React| Antarmuka pengguna
@@ -324,7 +324,7 @@ Vercel| Deployment
 
 ---
 
-Struktur Halaman
+**Struktur Halaman**
 
 Route| Fungsi
 "/"| Landing page
@@ -336,7 +336,7 @@ Route| Fungsi
 
 ---
 
-Model Data
+**Model Data**
 
 Entitas utama dalam backend adalah:
 
@@ -388,7 +388,7 @@ Database juga memiliki constraint dan validasi untuk membantu mencegah data yang
 
 ---
 
-Keamanan
+**Keamanan**
 
 Karena TriagePeace menangani informasi yang berpotensi sensitif, keamanan merupakan salah satu bagian penting dari arsitektur.
 
@@ -434,7 +434,7 @@ Log hanya mencatat kategori kegagalan yang diperlukan untuk debugging.
 
 ---
 
-Sistem Antrean Offline
+**Sistem Antrean Offline**
 
 Salah satu komponen terpenting TriagePeace adalah offline queue.
 
@@ -483,7 +483,7 @@ Jika server menolak data secara permanen, data tersebut dipindahkan ke penyimpan
 
 ---
 
-Arsitektur Triase
+**Arsitektur Triase**
 
 Tingkat keparahan direpresentasikan sebagai:
 
@@ -516,7 +516,7 @@ Validasi kritis juga perlu ditegakkan di sisi backend.
 
 ---
 
-Keselamatan Klinis
+**Keselamatan Klinis**
 
 TriagePeace saat ini merupakan prototype hackathon.
 
@@ -541,7 +541,7 @@ Deployment di dunia nyata juga harus mempertimbangkan:
 
 ---
 
-Instalasi
+**Instalasi**
 
 Persyaratan
 
@@ -561,7 +561,7 @@ npm --version
 
 ---
 
-Menjalankan Project
+**Menjalankan Project**
 
 Clone repository:
 
@@ -581,7 +581,7 @@ npm run dev
 
 ---
 
-Environment Variables
+**Environment Variables**
 
 Buat file:
 
@@ -606,7 +606,7 @@ ke dalam repository Git.
 
 ---
 
-Supabase
+**Supabase**
 
 File konfigurasi database berada di:
 
@@ -631,7 +631,7 @@ Sebelum digunakan dengan data pasien nyata, konfigurasi database, security polic
 
 ---
 
-Production Build
+**Production Build**
 
 Untuk membuat production build:
 
@@ -643,7 +643,7 @@ npm run preview
 
 ---
 
-Linting
+**Linting**
 
 Jalankan:
 
@@ -653,7 +653,7 @@ Project menggunakan Oxlint untuk pemeriksaan kode.
 
 ---
 
-Security Testing
+**Security Testing**
 
 Repository menyediakan pengujian keamanan database:
 
@@ -665,7 +665,7 @@ supabase/tests/run-all.mjs
 
 ---
 
-Struktur Repository
+**Struktur Repository**
 
 TriagePeace/
 │
@@ -713,7 +713,7 @@ TriagePeace/
 
 ---
 
-Filosofi Desain
+**Filosofi Desain**
 
 TriagePeace menggunakan filosofi desain yang sederhana dan berfokus pada pengguna.
 
@@ -739,7 +739,7 @@ Desain menggunakan visual yang tenang dan profesional daripada estetika yang ter
 
 ---
 
-Mengapa Offline-First?
+**Mengapa Offline-First?**
 
 Sebagian besar aplikasi berasumsi:
 
@@ -773,7 +773,7 @@ Koneksi internet diperlakukan sebagai sesuatu yang tersedia ketika memungkinkan,
 
 ---
 
-Konteks Hackathon
+**Konteks Hackathon**
 
 TriagePeace dikembangkan sebagai prototype hackathon yang berfokus pada peningkatan kontinuitas informasi kesehatan di lingkungan dengan konektivitas internet yang terbatas.
 
@@ -785,7 +785,7 @@ Demo utama TriagePeace:
 
 ---
 
-Keterbatasan Saat Ini
+**Keterbatasan Saat Ini**
 
 TriagePeace masih merupakan prototype dan memiliki beberapa keterbatasan:
 
@@ -801,7 +801,7 @@ Keterbatasan ini penting karena software kesehatan memiliki standar keamanan dan
 
 ---
 
-Roadmap
+**Roadmap**
 
 Klinis
 
@@ -841,7 +841,7 @@ Platform
 
 ---
 
-Kontribusi
+**Kontribusi**
 
 Kontribusi dipersilakan.
 
@@ -860,7 +860,7 @@ Perubahan yang berkaitan dengan aturan klinis atau data pasien memerlukan perhat
 
 ---
 
-Lisensi
+**Lisensi**
 
 Repository ini saat ini belum menentukan open-source license.
 
@@ -868,7 +868,7 @@ Tanpa lisensi yang sesuai, kode dalam repository tidak boleh diasumsikan bebas u
 
 ---
 
-Disclaimer
+**Disclaimer**
 
 TriagePeace adalah prototype hackathon.
 
