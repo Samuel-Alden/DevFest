@@ -1,16 +1,3 @@
-// Edge Function security tests for send-triage-alert.
-//
-// The function authenticates the caller (shared webhook secret) BEFORE it
-// parses or validates the body, so without a valid secret every POST is 401
-// regardless of shape. The input-validation (400) and happy-path checks
-// therefore only run when SECTEST_WEBHOOK_SECRET is provided.
-//
-// Before the hardened function is deployed the unauthenticated checks below
-// fail (old build answers 200/500) — those failures are the Phase 6 finding.
-//
-// Run:  node supabase/tests/security-edge-function.mjs
-//   SECTEST_WEBHOOK_SECRET=<value>  also exercises the authorised paths
-
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
@@ -61,7 +48,6 @@ const secretHeader = { 'x-triage-webhook-secret': SECRET }
 
 console.log('\nEdge Function — send-triage-alert\n')
 
-// --- reachable without any secret --------------------------------------
 {
   const r = await call({ method: 'GET' })
   check('GET -> 405 (method rejected before anything else)', r.status === 405, `status ${r.status}`)
@@ -79,7 +65,6 @@ console.log('\nEdge Function — send-triage-alert\n')
   check('POST, no secret, junk body -> 401 (auth before parse)', r.status === 401, `status ${r.status}`)
 }
 
-// --- authorised paths (need the real secret) --------------------------
 if (SECRET) {
   {
     const r = await call({ headers: secretHeader, body: 'not json' })
