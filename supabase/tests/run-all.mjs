@@ -1,16 +1,3 @@
-// Runs every security test module in sequence and sums the results.
-//
-//   node supabase/tests/run-all.mjs
-//
-// Env:
-//   SECTEST_HW_EMAIL / SECTEST_HW_PASSWORD  throwaway health-worker account
-//                                           (authenticated + triage-integrity)
-//   SECTEST_WEBHOOK_SECRET                   optional, edge-function authed path
-//
-// security-edge-function.mjs is expected to FAIL until the hardened
-// send-triage-alert is deployed and TRIAGE_WEBHOOK_SECRET is set — its
-// failures are the Phase 6 findings.
-
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
