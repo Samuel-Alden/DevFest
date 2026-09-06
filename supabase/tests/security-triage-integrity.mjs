@@ -1,16 +1,3 @@
-// Triage severity integrity tests for TriagePeace.
-//
-// A tampered client can put anything in `severity`. The BEFORE INSERT trigger
-// enforce_triage_severity() clamps the stored value up to the floor implied
-// by the selected symptoms (worst-tag-wins over SYMPTOM_OPTIONS). The client's
-// assessment escalation only pushes severity up, so this never fights a
-// correct client.
-//
-// Submits as anon (the field-device surface), reads back through a throwaway
-// health-worker session to see what was actually stored.
-//   set SECTEST_HW_EMAIL / SECTEST_HW_PASSWORD, then:
-//   node supabase/tests/security-triage-integrity.mjs
-
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
@@ -70,7 +57,6 @@ async function readBack(tag) {
 }
 
 async function main() {
-  // sign in
   {
     const res = await fetch(`${URL}/auth/v1/token?grant_type=password`, {
       method: 'POST',
@@ -81,7 +67,6 @@ async function main() {
     try {
       token = JSON.parse(text).access_token
     } catch {
-      /* leave token null */
     }
     check('health worker sign-in', res.status === 200 && Boolean(token), `status ${res.status} ${text.slice(0, 160)}`)
     if (!token) return
@@ -114,7 +99,6 @@ for (const c of cases) {
   check(c.why, row?.severity === c.expect, `stored ${row?.severity}, expected ${c.expect}`)
 }
 
-// cleanup this run's rows (health worker: resolve then delete)
 await fetch(`${REST}/triage_submissions?notes=like.SECTEST%20${RUN_ID}%25`, {
   method: 'PATCH',
   headers: { apikey: KEY, Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
